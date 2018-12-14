@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">PhontoManager</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="scanning">Scanning...</string>
+    <string name="alert">Alert</string>
+    <string name="read_external_storage_exception">please allow app read/write extenal storage</string>
+    <string name="already_select">selected number:</string>
+    <string name="select_all">Select All</string>
+    <string name="un_select_all">Cancel Select All</string>
+    <string name="no_select_photo">There are not photos to upload</string>
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_register_short">Register</string>
+    <string name="error_invalid_username">This username is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="login_progress_message">Loginning...</string>
+    <string name="username_password_error">The username or password error</string>
+    <string name="no_need_backup_error">There are not new image to backup</string>
+    <string name="server_error">Server Error</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!--    register info-->
+    <string name="nick_name">Nick name</string>
+    <string name="telphone">Telphone</string>
+    <string name="email">Email</string>
+    <string name="title_activity_register">Register</string>
+    <string name="confirm_password">Repeat password:</string>
+    <string name="register_commit">Commit</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <string name="error_invalid_telnumber">This telnumber is invalid</string>
+    <string name="error_invalid_nickname">The nickname is invalid</string>
+    <string name="password_not_equal">Password is not same</string>
+    <string name="nickname_exist">Nick name exist</string>
+    <string name="email_exist">Email exist</string>
+    <string name="telnumber_exist">Telnumber exist</string>
+    <string name="register_progress_message">Submitting...</string>
+    <string name="pls_connect_network">please connect network</string>
+    <string name="register_sucess">Register sucess,pls login!</string>
+    <string name="dialog_title">Notice</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="back_up_success">Backup Success</string>
+    <string name="img_is_empty">Image is empty.</string>
+    <string name="network_not_connect">Network is not connected.</string>
+    <string name="network_conn_exception">Network Connect Exception</string>
+    <string name="back_up_fail">Backup Fail</string>
+    <string name="click_backup">Click Backup</string>
+    <string name="file_not_found">File not found</string>
+    <string name="is_downloading">Donwloading...</string>
+    <string name="is_uploading">Uploading...</string>
+    <string name="login_out">Login out</string>
+    <string name="no_need_recover">the netword has not new img</string>
+
+    <string name="option_settings">Settings</string>
+    <string name="recover_success">Recovery Success</string>
+    <string name="user_invalid">pls login.</string>
+    <string name="photo_has_uploaded">Photo has been in cloud,no need upload</string>
+    <string name="pls_select_unuplosd_photo">pls select unuploaded photo</string>
+    <string name="is_loading">Loading...</string>
+    <string name="uploading_notification">Uploading::</string>
+    <string name="file_number">File number:</string>
+    <string name="upload_success">Photo upload success.</string>
+    <string name="upload_fail">Upload Fail</string>
+    <string name="multi_upload_success"> Photos upload success</string>
+    <string name="title_activity_cloud_photos">Cloud Photos</string>
+    <string name="phone_photos">Phone Photos</string>
+    <string name="has_no_photos_in_cloud">It is all photos in cloud</string>
+    <string name="preview_photo">Preview</string>
+    <string name="download_photo">Download</string>
+    <string name="delete_photo">Delete from cloud</string>
+    <string name="photo_exist_in_phone">Photo has exist,no need download</string>
+    <string name="pls_select">Please Select</string>
+    <string name="is_deleting">Deleting...</string>
+    <string name="download_finish">Download finish</string>
+    <string name="delet_success">Delete success</string>
+    <string name="delet_fail">Delete fail</string>
+</resources>

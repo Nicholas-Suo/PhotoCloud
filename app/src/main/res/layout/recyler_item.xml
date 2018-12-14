@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/colorGray"
+    android:layout_height="@dimen/photo_height">
+<!--    app:srcCompat="@mipmap/ic_launcher"-->
+    <ImageView
+        android:id="@+id/photo_view"
+        android:layout_width="@dimen/photo_width"
+        android:layout_height="@dimen/photo_height"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:background="@color/colorGray"
+        />
+
+    <CheckBox
+        android:id="@+id/photo_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorGray"
+        />
+
+    <ImageView
+        android:id="@+id/photo_sync_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/stat_notify_sync"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        />
+</RelativeLayout>
