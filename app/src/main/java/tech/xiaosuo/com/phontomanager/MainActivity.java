@@ -71,6 +71,7 @@ import cn.bmob.v3.listener.UploadBatchListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import tech.xiaosuo.com.phontomanager.bean.PhotoInfoTable;
 import tech.xiaosuo.com.phontomanager.database.DataBaseHelper;
+import tech.xiaosuo.com.phontomanager.interfaces.UIPresenter;
 import tech.xiaosuo.com.phontomanager.service.PhotoManagerService;
 import tech.xiaosuo.com.phontomanager.sync.SyncWorker;
 import tech.xiaosuo.com.phontomanager.tools.DBUtils;
@@ -79,7 +80,7 @@ import tech.xiaosuo.com.phontomanager.bean.ImageInfo;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener , PhotoRecylerAdapter.OnRecyclerItemClickListener,View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener , PhotoRecylerAdapter.OnRecyclerItemClickListener,View.OnClickListener ,UIPresenter {
 
     private static final String TAG = "MainActivity";
     private static final int MAX_LIMIT = 30;
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity
     boolean isBoundService = false;
     MenuItem selectButton;
     FloatingActionButton fab;
+    ObjectAnimator uploadAnimator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity
         mContext = getApplicationContext();
         progressLayout = (LinearLayout) findViewById(R.id.progress_layout);
         mProgressBar = (ContentLoadingProgressBar)findViewById(R.id.loading_progressbar);
-        mDatabaseHelper = new DataBaseHelper(mContext,null,null,DataBaseHelper.VERSION);
+        mDatabaseHelper = DataBaseHelper.getDbHelperInstance(mContext);// new DataBaseHelper(mContext,null,null,DataBaseHelper.VERSION);
 
         mRecyclerView = (RecyclerView)findViewById(R.id.photo_recycler_view);
 
@@ -218,6 +220,11 @@ public class MainActivity extends AppCompatActivity
         if(mRecylerAdapter != null){
             mRecylerAdapter.updateSyncStatusMap();
         }
+
+        if(photoManagerService != null){
+            photoManagerService.setUiPresenter(this);
+        }
+
        // initSyncWorkManager();
     }
 
@@ -470,13 +477,7 @@ public class MainActivity extends AppCompatActivity
                     insertBombObject(imageInfo);
                     Toast.makeText(mContext,"upload success.",Toast.LENGTH_SHORT).show();
                     endAnimator(animator,checkBox,imageSyncView);
-/*                    if(animator != null){
-                        Log.d(TAG," uploadOneFile the picfile upload success,cancel annimator :");
-                        animator.end();
-                        //animator.cancel();
-                    }
-                    checkBox.setChecked(false);
-                    imageSyncView.setImageResource(android.R.drawable.stat_sys_upload);*/
+
                 }else{
                      Toast.makeText(mContext,"upload fail.",Toast.LENGTH_SHORT).show();
                     Log.d(TAG," uploadOneFile the pic file upload fail :" + e.getMessage());
@@ -691,24 +692,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    /**
-     *  end the ObjectAnimator animation
-     *
-     */
-    private void endAnimator(ObjectAnimator animator,CheckBox checkBox,ImageView imageSyncView){
-        if(animator != null){
-            animator.end();
-            if(checkBox != null){
-                Log.d(TAG," endAnimator checkBox set false");
-                checkBox.setChecked(false);
-            }
-            if(imageSyncView != null) {
-                Log.d(TAG," endAnimator photo set sys upload img");
-                imageSyncView.setImageResource(android.R.drawable.stat_sys_upload);
-            }
-            Log.d(TAG," endAnimator ok.");
-        }
-    }
+
 
     /**
      *
@@ -1191,5 +1175,59 @@ private Handler mainHandler = new Handler(){
     }
 
 
+    @Override
+    public void uploadAnimation(boolean flag,int position) {
+         ImageView imageSyncView = null;
+         CheckBox checkBox = null;
+        RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(position);
 
+        if(holder == null){
+            Log.d(TAG," the view holder is null");
+           return;
+        }
+        imageSyncView = ((PhotoRecylerAdapter.PhotoHolder) holder).getPhotoSyncView();
+        checkBox = ((PhotoRecylerAdapter.PhotoHolder) holder).getCheckBoxView();
+        if(flag == UIPresenter.ANIMATION_START){//start aunimation
+            imageSyncView.setImageResource(android.R.drawable.stat_notify_sync);
+            imageSyncView.setVisibility(View.VISIBLE);
+            checkBox.setChecked(false);
+            uploadAnimator = Utils.rotatePhotoImageViewAnimator(imageSyncView,0,360);
+            Log.d(TAG," uploadAnimation begin start ");
+            uploadAnimator.start();
+        }else if(flag == UIPresenter.ANIMATION_STOP){//stop animation
+            if(uploadAnimator != null){
+                uploadAnimator.end();
+                if(checkBox != null){
+                    Log.d(TAG," uploadAnimation checkBox set false");
+                    checkBox.setChecked(false);
+                }
+                if(imageSyncView != null) {
+                    Log.d(TAG," uploadAnimation photo set sys upload img");
+                    imageSyncView.setImageResource(android.R.drawable.stat_sys_upload);
+                }
+                uploadAnimator = null;
+                Log.d(TAG," uploadAnimation  end ");
+            }
+        }
+    }
+
+
+    /**
+     *  end the ObjectAnimator animation
+     *
+     */
+    private void endAnimator(ObjectAnimator animator,CheckBox checkBox,ImageView imageSyncView){
+        if(animator != null){
+            animator.end();
+            if(checkBox != null){
+                Log.d(TAG," endAnimator checkBox set false");
+                checkBox.setChecked(false);
+            }
+            if(imageSyncView != null) {
+                Log.d(TAG," endAnimator photo set sys upload img");
+                imageSyncView.setImageResource(android.R.drawable.stat_sys_upload);
+            }
+            Log.d(TAG," endAnimator ok.");
+        }
+    }
 }

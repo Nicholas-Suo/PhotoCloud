@@ -22,7 +22,23 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "name text)";*/
     private static final String DATABASE_NAME = "photo.db";
     public static final int VERSION = 1;
+    private static  DataBaseHelper dbHelperInstance = null;
 
+    /**
+     * get the DataBaseHelper single instance.
+     *
+     */
+    public static DataBaseHelper getDbHelperInstance(Context context){
+
+             if(dbHelperInstance == null){
+                synchronized (DataBaseHelper.class){
+                     if(dbHelperInstance == null && context != null){
+                         dbHelperInstance = new DataBaseHelper(context,null,null,VERSION);
+                     }
+                }
+             }
+             return dbHelperInstance;
+    }
     private final String CREATE_PHOTO_INFO_TABLE ="create table " + PhotoInfoTable.PHOTO_INFO_TABLE + "( "
             + PhotoInfoTable._ID + " integer primary key autoincrement, "
             + PhotoInfoTable.COLUMN_IMAGE_NAME + " text, "

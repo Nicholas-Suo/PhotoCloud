@@ -44,6 +44,7 @@ import tech.xiaosuo.com.phontomanager.bean.ImageInfo;
 import tech.xiaosuo.com.phontomanager.bean.PhotoInfoTable;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 import tech.xiaosuo.com.phontomanager.database.DataBaseHelper;
+import tech.xiaosuo.com.phontomanager.interfaces.UIPresenter;
 import tech.xiaosuo.com.phontomanager.tools.DBUtils;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
@@ -64,6 +65,11 @@ public class PhotoManagerService extends Service {
     public static int STATUS_DONE = 2;
     int uploadStatus = STATUS_NORMAL;
     Handler mHandler;
+    UIPresenter uiPresenter;
+
+    public void setUiPresenter(UIPresenter uiPresenter) {
+        this.uiPresenter = uiPresenter;
+    }
 
     public void setmHandler(Handler mHandler) {
         this.mHandler = mHandler;
@@ -100,34 +106,19 @@ public class PhotoManagerService extends Service {
      * only upload file,amd insert user info
      *
      */
-    public  void uploadOneFile(final ImageInfo imageInfo, final int postion){
+    public  void uploadOneFile(final ImageInfo imageInfo, final int position){
 
-        final ImageView imageSyncView;
-        final CheckBox checkBox;
-        if(imageInfo == null || postion == -1 || getUploadStatus() == STATUS_UPLOADING){
+       // final ImageView imageSyncView;
+        //final CheckBox checkBox;
+        if(imageInfo == null || position == -1 || getUploadStatus() == STATUS_UPLOADING){
             Log.d(TAG," uploadOneFile  imageInfo is null");
             resetMainFabButton();
             return;
         }
 
-        RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(postion);
-        if(holder instanceof PhotoRecylerAdapter.PhotoHolder){
-            imageSyncView = ((PhotoRecylerAdapter.PhotoHolder) holder).getPhotoSyncView();
-            checkBox = ((PhotoRecylerAdapter.PhotoHolder) holder).getCheckBoxView();
-            imageSyncView.setImageResource(android.R.drawable.stat_notify_sync);
-            imageSyncView.setVisibility(View.VISIBLE);
-            //animator = Utils.rotatePhotoImageViewAnimator(imageSyncView,0,360);
-        }else{
-            imageSyncView = null;
-            checkBox = null;
-            Log.d(TAG," uploadOneFile  imageSyncView is null");
-            resetMainFabButton();
-            return;
+        if(uiPresenter != null){
+            uiPresenter.uploadAnimation(UIPresenter.ANIMATION_START,position);
         }
-        //setUploadStatus(STATUS_UPLOADING);
-        final ObjectAnimator animator = Utils.rotatePhotoImageViewAnimator(imageSyncView,0,360);
-        animator.start();
-
         File picFile = Utils.getPhoneImageFile(imageInfo);
         final BmobFile bmobFile = new BmobFile(picFile);
         bmobFile.uploadblock(new UploadFileListener() {
@@ -142,7 +133,9 @@ public class PhotoManagerService extends Service {
                     imageInfo.setFile(file);
                     insertBombObject(imageInfo);
                     Toast.makeText(mContext,R.string.upload_success,Toast.LENGTH_SHORT).show();
-                    endAnimator(animator,checkBox,imageSyncView);
+                    if(uiPresenter != null){
+                        uiPresenter.uploadAnimation(UIPresenter.ANIMATION_STOP,position);
+                    }
                     stopForegroundNotification();
                 }else{
                     Toast.makeText(mContext,R.string.upload_fail,Toast.LENGTH_SHORT).show();
@@ -316,7 +309,10 @@ public class PhotoManagerService extends Service {
                 imageInfo.setFile(file);
                 insertBombObject(imageInfo);
                 Log.d(TAG," upload multi photo success end animator");
-                endAnimator(animator,checkBox,imageSyncView);
+                if(uiPresenter != null){
+                    uiPresenter.uploadAnimation(UIPresenter.ANIMATION_STOP,currentPosition);
+                }
+              //  endAnimator(animator,checkBox,imageSyncView);
                 Utils.removeKeyFromSelectedMap(currentPosition,mRecylerAdapter);
                 Log.d(TAG," upload multi photo set sys upload img ok");
                 if(urls.size()==pathArray.length){//如果数量相等，则代表文件全部上传完成
@@ -345,7 +341,7 @@ public class PhotoManagerService extends Service {
                 int position = pathPositionMap.get(pathArray[currentIndex]);
                 if(currentPosition != position){
                     currentPosition = position;
-                    RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(currentPosition);
+/*                    RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(currentPosition);
                     if(holder instanceof PhotoRecylerAdapter.PhotoHolder){
                         imageSyncView = ((PhotoRecylerAdapter.PhotoHolder) holder).getPhotoSyncView();
                         checkBox = ((PhotoRecylerAdapter.PhotoHolder) holder).getCheckBoxView();
@@ -354,6 +350,9 @@ public class PhotoManagerService extends Service {
                         checkBox.setChecked(false);
                         animator = Utils.rotatePhotoImageViewAnimator(imageSyncView,0,360);
                         animator.start();
+                    }*/
+                    if(uiPresenter != null){
+                        uiPresenter.uploadAnimation(UIPresenter.ANIMATION_START,currentPosition);
                     }
                 }
                 startForegroundNotificationMulti(totalPercent,curIndex,total);
