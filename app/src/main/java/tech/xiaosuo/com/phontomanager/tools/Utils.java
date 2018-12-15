@@ -84,7 +84,8 @@ public class Utils {
     public static final String PHOTO_IMAGEINFO_KEY = "photo_imageinfo_key";
     public static final String PHOTO_IMAGEINFO_POSITION_KEY ="photo_imageinfo_position";
     public static final int PREVIEW_CLOUD_PHOTO_REQUEST_CODE = 1;
-
+//check sync data whether is form webserver.
+    public static final int SYNC_FROM_SERVER = -1;
     public static boolean isNetworkConnected(Context context){
         ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

@@ -14,6 +14,7 @@ public interface UIPresenter {
     public static final int MSG_UPLOAD_FINISH = 7;
     public static final int  MSG_RM_KEY_FROM_ADAPTER = 8;
     public static final int  MSG_UPDATE_CHECKBOX_UNCHECKED = 9;
+    public static final int  MSG_UNSELECT_ALL = 10;// unselect all photo,refresh checkbox to unselect status.
 
     public void uploadAnimation(boolean flag,int position);
     public void sendMsgToMain(int msgId,int param);

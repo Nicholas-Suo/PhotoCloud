@@ -117,21 +117,10 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             finish();
         }
+        //bind service
+        Intent intent = new Intent(this,PhotoManagerService.class);
+        bindService(intent,mConnection, Context.BIND_AUTO_CREATE);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-/*        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG," begin upload photo ");
-                if(mRecylerAdapter!=null && photoManagerService != null && photoManagerService.getUploadStatus() != PhotoManagerService.STATUS_UPLOADING){
-                    uploadPhotos();
-                }
-
-*//*                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*//*
-            }
-        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -189,9 +178,25 @@ public class MainActivity extends AppCompatActivity
         filter.addAction(Utils.ACTION_UPLOAD_MULTI_PHOTOS_SUCCESS);
         filter.addAction(Utils.ACTION_UNSELECT_ALL);
         registerReceiver(mBrodcastReceiver,filter);
-        //bind service
-        Intent intent = new Intent(this,PhotoManagerService.class);
-        bindService(intent,mConnection, Context.BIND_AUTO_CREATE);
+/*        if(photoManagerService != null){
+            Log.d(TAG," service setUiPresenter");
+            photoManagerService.setUiPresenter(this);
+        }*/
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+/*        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG," begin upload photo ");
+                if(mRecylerAdapter!=null && photoManagerService != null && photoManagerService.getUploadStatus() != PhotoManagerService.STATUS_UPLOADING){
+                    uploadPhotos();
+                }
+
+*//*                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*//*
+            }
+        });*/
         //initSyncWorkManager();
        // loadDataFromServer();
     }
@@ -220,11 +225,6 @@ public class MainActivity extends AppCompatActivity
         if(mRecylerAdapter != null){
             mRecylerAdapter.updateSyncStatusMap();
         }
-
-        if(photoManagerService != null){
-            photoManagerService.setUiPresenter(this);
-        }
-
        // initSyncWorkManager();
     }
 
@@ -879,7 +879,9 @@ private Handler mainHandler = new Handler(){
                     }
                 }
                 break;
-
+            case MSG_UNSELECT_ALL:
+                unSelectAll();
+                break;
             default:
                 super.handleMessage(msg);
         }
@@ -1059,7 +1061,10 @@ private Handler mainHandler = new Handler(){
             Log.d(TAG," service connenct");
             PhotoManagerService.LocalBinder binder = (PhotoManagerService.LocalBinder)service;
             photoManagerService = binder.getService();
-            photoManagerService.setmRecyclerView(mRecyclerView);
+            if(photoManagerService != null){
+                Log.d(TAG," service setUiPresenter");
+                photoManagerService.setUiPresenter(MainActivity.this);
+            }
             isBoundService = true;
         }
 
@@ -1153,7 +1158,7 @@ private Handler mainHandler = new Handler(){
                 }else if(e == null){
                     Log.d(TAG," syncCloudData to phone database begin:");
                     for(ImageInfo imageInfo: list){
-                         DBUtils.syncDataToDatabase(mDatabaseHelper.getWritableDatabase(),imageInfo);
+                         DBUtils.syncDataToDatabase(mDatabaseHelper.getWritableDatabase(),imageInfo,Utils.SYNC_FROM_SERVER);
                     }
                     Log.d(TAG," syncCloudData to phone database end:");
                     if(skipNumber == 0){

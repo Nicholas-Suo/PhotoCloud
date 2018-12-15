@@ -57,7 +57,6 @@ public class PhotoManagerService extends Service {
     private final IBinder binder = new LocalBinder();
     Context mContext;
     DataBaseHelper mDbHelper;
-    RecyclerView mRecyclerView;
     NotificationCompat.Builder notificationBuilder = null;
     public static int STATUS_NORMAL = 0;
     public static int STATUS_UPLOADING = 1;
@@ -168,21 +167,8 @@ public class PhotoManagerService extends Service {
                     if(uiPresenter != null){
                         uiPresenter.saveImageUploadStatus(md5);
                     }
-
                     SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
-                    if(DBUtils.isExistInDb(sqLiteDatabase,md5,data)){
-                        Log.d(TAG," insertBombObject ,no not insert data into database,because has exist in db: ");
-                        return;
-                    }
-
-                    ContentValues values = new ContentValues();
-                    values.put(PhotoInfoTable.COLUMN_IMAGE_NAME,imgName);
-                    values.put(PhotoInfoTable.COLUMN_IMAGE_DATA,data);
-                    values.put(PhotoInfoTable.COLUMN_IMAGE_MD5,md5);
-                    values.put(PhotoInfoTable.COLUMN_IMAGE_IS_IN_CLOUD,cloud);
-                    long id = sqLiteDatabase.insert(PhotoInfoTable.PHOTO_INFO_TABLE,null,values);
-                    Log.d(TAG," insertBombObject to insert phone database,the insert id is: " + id);
-                    //  toast("添加数据成功，返回objectId为："+objectId);
+                    DBUtils.syncDataToDatabase(sqLiteDatabase,obj,cloud);
                 }else{
                     Log.d(TAG, " insertBombObject fail  " + e.getMessage());
                     Toast.makeText(mContext,"insert obj fail," + e.toString(),Toast.LENGTH_SHORT).show();
@@ -190,14 +176,6 @@ public class PhotoManagerService extends Service {
                 }
             }
         });
-    }
-
-    /**
-     *
-     * @param mRecyclerView
-     */
-    public void setmRecyclerView(RecyclerView mRecyclerView) {
-        this.mRecyclerView = mRecyclerView;
     }
 
     /**
@@ -234,12 +212,14 @@ public class PhotoManagerService extends Service {
         }
         Log.d(TAG," upload muti files,need upload photo count:" + indexMap.size());
         if(indexMap.size() == 0){
-            Intent intent = new Intent();
+/*            Intent intent = new Intent();
             intent.setAction(Utils.ACTION_UNSELECT_ALL);
-            mContext.sendBroadcast(intent);
-
-            Toast.makeText(mContext, R.string.pls_select_unuplosd_photo,Toast.LENGTH_SHORT).show();
+            mContext.sendBroadcast(intent);*/
+            if(uiPresenter != null){// using msg handler to refresh UI.
+                uiPresenter.sendMsgToMain(UIPresenter.MSG_UNSELECT_ALL,-1);
+            }
             resetMainFabButton();
+            Toast.makeText(mContext, R.string.pls_select_unuplosd_photo,Toast.LENGTH_SHORT).show();
             return;
         }
         //newIndexMap = indexMap
@@ -365,6 +345,8 @@ public class PhotoManagerService extends Service {
      * this use to update UI in main thread.
      */
     private void resetMainFabButton(){
-        uiPresenter.sendMsgToMain(UIPresenter.MSG_UPLOAD_FINISH,-1);
+        if(uiPresenter != null){
+            uiPresenter.sendMsgToMain(UIPresenter.MSG_UPLOAD_FINISH,-1);
+        }
     }
 }

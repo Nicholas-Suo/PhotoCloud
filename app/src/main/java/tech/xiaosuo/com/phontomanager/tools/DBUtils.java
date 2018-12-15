@@ -186,8 +186,9 @@ public class DBUtils {
      *
      * @param sqLiteDatabase
      * @param imageInfo
+     * @param flag if flag == SYNC_FROM_SERVER ,we need set column COLUMN_IMAGE_IS_IN_CLOUD as 1. other's use flag value.
      */
-    public static void syncDataToDatabase(SQLiteDatabase sqLiteDatabase,ImageInfo imageInfo){
+    public static void syncDataToDatabase(SQLiteDatabase sqLiteDatabase,ImageInfo imageInfo,int flag){
         if(imageInfo == null || sqLiteDatabase == null){
             return;
         }
@@ -200,7 +201,12 @@ public class DBUtils {
         values.put(PhotoInfoTable.COLUMN_IMAGE_NAME,imageInfo.getDisplayName());
         values.put(PhotoInfoTable.COLUMN_IMAGE_DATA,imageInfo.getData());
         values.put(PhotoInfoTable.COLUMN_IMAGE_MD5,imageInfo.getMd5());
-        values.put(PhotoInfoTable.COLUMN_IMAGE_IS_IN_CLOUD,1);
+        if(flag == Utils.SYNC_FROM_SERVER){
+            values.put(PhotoInfoTable.COLUMN_IMAGE_IS_IN_CLOUD,1);
+        }else{
+            values.put(PhotoInfoTable.COLUMN_IMAGE_IS_IN_CLOUD,flag);
+        }
+
         long id = sqLiteDatabase.insert(PhotoInfoTable.PHOTO_INFO_TABLE,null,values);
         Log.d(TAG," syncDataToDatabase to phone database,the id is: " + id);
     }
