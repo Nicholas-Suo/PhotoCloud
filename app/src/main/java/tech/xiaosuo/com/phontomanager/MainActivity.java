@@ -637,7 +637,7 @@ public class MainActivity extends AppCompatActivity
                 insertBombObject(imageInfo);
                 Log.d(TAG," upload multi photo success end animator");
                 endAnimator(animator,checkBox,imageSyncView);
-                Utils.removeKeyFromSelectedMap(currentPosition,mRecylerAdapter);
+                removeKeyFromSelectedMap(currentPosition,mRecylerAdapter);
                 Log.d(TAG," upload multi photo set sys upload img ok");
                 if(urls.size()==pathArray.length){//如果数量相等，则代表文件全部上传完成
                    // mRecylerAdapter.clearCheckBoxStatusMap();//update map ,for uploaded photo ui.need show unselected
@@ -822,16 +822,16 @@ private Handler mainHandler = new Handler(){
         int result = msg.arg1;
         Log.d(TAG," mainHandler result: " + result);
         switch (what){
-            case Utils.MSG_BACKUP_IMG_FAIL:
+            case MSG_BACKUP_IMG_FAIL:
                 showErrorDialog(what,result);
                // notificationManager.cancel(NOTIFICATION_TAG);
                 break;
-            case Utils.MSG_NO_NEED_BACKUP_OR_RESTORE:
+            case MSG_NO_NEED_BACKUP_OR_RESTORE:
                 showErrorDialog(what,result);
                 break;
-            case Utils.MSG_IMG_LIST_IS_EMPERTY:
-            case Utils.MSG_NETWORK_IS_NOT_CONNECT:
-            case Utils.MSG_PLS_CHECK_PERMISSION:
+            case MSG_IMG_LIST_IS_EMPERTY:
+            case MSG_NETWORK_IS_NOT_CONNECT:
+            case MSG_PLS_CHECK_PERMISSION:
                 showErrorDialog(what,-1);
                 break;
            /* case Utils.MSG_UPDATE_NOTIFICATION:
@@ -860,13 +860,26 @@ private Handler mainHandler = new Handler(){
                 }
 
                 break;*/
-            case Utils.MSG_SHOW_SUCCESS:
+            case MSG_SHOW_SUCCESS:
              //   int isBackup = msg.arg1;
              //   showSuccessDialog(isBackup);
                 break;
-            case Utils.MSG_UPLOAD_FINISH:
+            case MSG_UPLOAD_FINISH:
                 fab.setVisibility(View.VISIBLE);
                 break;
+            case MSG_RM_KEY_FROM_ADAPTER:
+                removeKeyFromSelectedMap(result,mRecylerAdapter);
+                break;
+            case MSG_UPDATE_CHECKBOX_UNCHECKED:// upload success,we need update the photo's checkbox status to false.
+                RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(result);
+                if(holder instanceof PhotoRecylerAdapter.PhotoHolder){//update the uploaded phohto ui
+                    CheckBox itemCheckBox = ((PhotoRecylerAdapter.PhotoHolder) holder).getCheckBoxView();
+                    if(itemCheckBox != null){
+                        itemCheckBox.setChecked(false);
+                    }
+                }
+                break;
+
             default:
                 super.handleMessage(msg);
         }
@@ -908,7 +921,7 @@ private Handler mainHandler = new Handler(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         int message = R.string.dialog_title;
         switch(what){
-            case Utils.MSG_BACKUP_IMG_FAIL:
+            case MSG_BACKUP_IMG_FAIL:
                 if(result == Utils.CONNECT_EXCEPTION){
                     message = R.string.network_conn_exception;
                 }else if(result == Utils.FILE_NOT_FOUND){
@@ -921,16 +934,16 @@ private Handler mainHandler = new Handler(){
                 }
 
                 break;
-            case Utils.MSG_IMG_LIST_IS_EMPERTY:
+            case MSG_IMG_LIST_IS_EMPERTY:
                 message = R.string.img_is_empty;
                 break;
-            case Utils.MSG_NETWORK_IS_NOT_CONNECT:
+            case MSG_NETWORK_IS_NOT_CONNECT:
                 message = R.string.network_not_connect;
                 break;
-            case Utils.MSG_PLS_CHECK_PERMISSION:
+            case MSG_PLS_CHECK_PERMISSION:
                 message = R.string.read_external_storage_exception;
                 break;
-            case Utils.MSG_NO_NEED_BACKUP_OR_RESTORE:
+            case MSG_NO_NEED_BACKUP_OR_RESTORE:
                 if(result == Utils.IS_BACKPU){
                     message = R.string.no_need_backup_error;
                 }else if(result == Utils.IS_RESTORE){
@@ -1028,7 +1041,7 @@ private Handler mainHandler = new Handler(){
 
                  int value = intent.getIntExtra(Utils.CURRENT_POSITION,Utils.INSERT_ONE_PHOTO);
                  if(value != Utils.INSERT_ONE_PHOTO){
-                     Utils.removeKeyFromSelectedMap(value,mRecylerAdapter);
+                     removeKeyFromSelectedMap(value,mRecylerAdapter);
                  }
              }else if(Utils.ACTION_UPLOAD_MULTI_PHOTOS_SUCCESS.equals(action)){
 
@@ -1046,10 +1059,7 @@ private Handler mainHandler = new Handler(){
             Log.d(TAG," service connenct");
             PhotoManagerService.LocalBinder binder = (PhotoManagerService.LocalBinder)service;
             photoManagerService = binder.getService();
-            photoManagerService.setmHandler(mainHandler);
-            photoManagerService.setmDbHelper(mDatabaseHelper);
             photoManagerService.setmRecyclerView(mRecyclerView);
-            photoManagerService.setmRecylerAdapter(mRecylerAdapter);
             isBoundService = true;
         }
 
@@ -1211,6 +1221,25 @@ private Handler mainHandler = new Handler(){
         }
     }
 
+    @Override
+    public void sendMsgToMain(int msgId,int param) {
+        Message msg = new Message();
+        msg.what = msgId;
+        msg.arg1 = param;
+        mainHandler.sendMessage(msg);
+    }
+
+    /*
+      if the image has been uploaded to cloud,
+      we need save the image status, is uploaded finish.
+     */
+    @Override
+    public void saveImageUploadStatus(String md5) {
+        if(mRecylerAdapter != null){
+            mRecylerAdapter.saveUploadStatus(md5);
+        }
+    }
+
 
     /**
      *  end the ObjectAnimator animation
@@ -1228,6 +1257,20 @@ private Handler mainHandler = new Handler(){
                 imageSyncView.setImageResource(android.R.drawable.stat_sys_upload);
             }
             Log.d(TAG," endAnimator ok.");
+        }
+    }
+
+    /**
+     *  if upload success, we weill update the selected map value,detail to see PhotoRecylerAdapter
+     *  because, if the holderView is recycler use,the animator is null,can not set checkbox enable true or false, the UI is not refresh when pull back to check UI.
+     *  so,wei need update the selected map--->checkBoxStatusMap
+     * @param position, the key in map.
+     */
+    public static  void removeKeyFromSelectedMap(int position,PhotoRecylerAdapter adapter){
+        Log.d(TAG," removeKeyFromSelectedMap ,the position is: " + position);
+        if(position != -1 && adapter!= null && adapter.getCheckBoxStatusMap().containsKey(position)){//need remove the key ,value if success upload.
+            adapter.getCheckBoxStatusMap().remove(position);
+            Log.d(TAG," removeKeyFromSelectedMap ,remove ok");
         }
     }
 }

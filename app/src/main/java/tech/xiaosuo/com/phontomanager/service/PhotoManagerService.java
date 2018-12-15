@@ -58,21 +58,16 @@ public class PhotoManagerService extends Service {
     Context mContext;
     DataBaseHelper mDbHelper;
     RecyclerView mRecyclerView;
-    PhotoRecylerAdapter mRecylerAdapter;
     NotificationCompat.Builder notificationBuilder = null;
     public static int STATUS_NORMAL = 0;
     public static int STATUS_UPLOADING = 1;
     public static int STATUS_DONE = 2;
     int uploadStatus = STATUS_NORMAL;
-    Handler mHandler;
+
     UIPresenter uiPresenter;
 
     public void setUiPresenter(UIPresenter uiPresenter) {
         this.uiPresenter = uiPresenter;
-    }
-
-    public void setmHandler(Handler mHandler) {
-        this.mHandler = mHandler;
     }
 
     public int getUploadStatus() {
@@ -99,6 +94,7 @@ public class PhotoManagerService extends Service {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        mDbHelper = DataBaseHelper.getDbHelperInstance(mContext);
     }
 
 
@@ -108,8 +104,6 @@ public class PhotoManagerService extends Service {
      */
     public  void uploadOneFile(final ImageInfo imageInfo, final int position){
 
-       // final ImageView imageSyncView;
-        //final CheckBox checkBox;
         if(imageInfo == null || position == -1 || getUploadStatus() == STATUS_UPLOADING){
             Log.d(TAG," uploadOneFile  imageInfo is null");
             resetMainFabButton();
@@ -171,8 +165,8 @@ public class PhotoManagerService extends Service {
                     String data = obj.getData();
                     String md5 = obj.getMd5();
                     int cloud = 1;
-                    if(mRecylerAdapter != null){
-                        mRecylerAdapter.saveUploadStatus(md5);
+                    if(uiPresenter != null){
+                        uiPresenter.saveImageUploadStatus(md5);
                     }
 
                     SQLiteDatabase sqLiteDatabase = mDbHelper.getWritableDatabase();
@@ -198,25 +192,12 @@ public class PhotoManagerService extends Service {
         });
     }
 
-
-    /**
-     * set the dbhelper from mainactivity.
-     * @param mDbHelper
-     */
-    public void setmDbHelper(DataBaseHelper mDbHelper) {
-        this.mDbHelper = mDbHelper;
-    }
-
     /**
      *
      * @param mRecyclerView
      */
     public void setmRecyclerView(RecyclerView mRecyclerView) {
         this.mRecyclerView = mRecyclerView;
-    }
-
-    public void setmRecylerAdapter(PhotoRecylerAdapter mRecylerAdapter) {
-        this.mRecylerAdapter = mRecylerAdapter;
     }
 
     /**
@@ -247,22 +228,16 @@ public class PhotoManagerService extends Service {
         for(int i=0 ;i<positions.size();i++){
             int itemPosition = positions.get(i);
             indexMap.remove(itemPosition);//update the indexmap , for upload the unupload photo
-            RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(itemPosition);
-            if(holder instanceof PhotoRecylerAdapter.PhotoHolder){//update the uploaded phohto ui
-                CheckBox itemCheckBox = ((PhotoRecylerAdapter.PhotoHolder) holder).getCheckBoxView();
-                if(itemCheckBox != null){
-                    itemCheckBox.setChecked(false);
-                }
+            if(uiPresenter != null){
+                uiPresenter.sendMsgToMain(UIPresenter.MSG_UPDATE_CHECKBOX_UNCHECKED,itemPosition);
             }
-            // mRecylerAdapter.removeValueFromMap(i);
         }
         Log.d(TAG," upload muti files,need upload photo count:" + indexMap.size());
         if(indexMap.size() == 0){
             Intent intent = new Intent();
             intent.setAction(Utils.ACTION_UNSELECT_ALL);
             mContext.sendBroadcast(intent);
-           // mRecylerAdapter.unselectedAll();
-           // mRecylerAdapter.notifyDataSetChanged();
+
             Toast.makeText(mContext, R.string.pls_select_unuplosd_photo,Toast.LENGTH_SHORT).show();
             resetMainFabButton();
             return;
@@ -290,8 +265,6 @@ public class PhotoManagerService extends Service {
         arrayList.toArray(pathArray);
        // setUploadStatus(STATUS_UPLOADING);
         BmobFile.uploadBatch(pathArray, new UploadBatchListener() {
-            ImageView imageSyncView;
-            CheckBox checkBox;
             int currentPosition = -1;
             int currentIndex = -1;
             ObjectAnimator animator;
@@ -311,9 +284,8 @@ public class PhotoManagerService extends Service {
                 Log.d(TAG," upload multi photo success end animator");
                 if(uiPresenter != null){
                     uiPresenter.uploadAnimation(UIPresenter.ANIMATION_STOP,currentPosition);
+                    uiPresenter.sendMsgToMain(UIPresenter.MSG_RM_KEY_FROM_ADAPTER,currentPosition);
                 }
-              //  endAnimator(animator,checkBox,imageSyncView);
-                Utils.removeKeyFromSelectedMap(currentPosition,mRecylerAdapter);
                 Log.d(TAG," upload multi photo set sys upload img ok");
                 if(urls.size()==pathArray.length){//如果数量相等，则代表文件全部上传完成
                     stopForegroundNotification();
@@ -341,55 +313,14 @@ public class PhotoManagerService extends Service {
                 int position = pathPositionMap.get(pathArray[currentIndex]);
                 if(currentPosition != position){
                     currentPosition = position;
-/*                    RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(currentPosition);
-                    if(holder instanceof PhotoRecylerAdapter.PhotoHolder){
-                        imageSyncView = ((PhotoRecylerAdapter.PhotoHolder) holder).getPhotoSyncView();
-                        checkBox = ((PhotoRecylerAdapter.PhotoHolder) holder).getCheckBoxView();
-                        Log.d(TAG," upload multi photo show animator");
-                        imageSyncView.setVisibility(View.VISIBLE);
-                        checkBox.setChecked(false);
-                        animator = Utils.rotatePhotoImageViewAnimator(imageSyncView,0,360);
-                        animator.start();
-                    }*/
                     if(uiPresenter != null){
                         uiPresenter.uploadAnimation(UIPresenter.ANIMATION_START,currentPosition);
                     }
                 }
                 startForegroundNotificationMulti(totalPercent,curIndex,total);
-/*                if(notificationBuilder != null){
-                    notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
-   *//*                 Drawable drawable = getResources().getDrawable(R.mipmap.ic_launcher);
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
-                    notificationBuilder.setLargeIcon(bitmapDrawable.getBitmap());*//*
-                    notificationBuilder.setContentTitle(getString(R.string.app_name));
-                    notificationBuilder.setContentText(getString(R.string.uploading_notification) + String.valueOf(totalPercent) + " " + getString(R.string.file_number) + curIndex + "/" + total);
-                    notificationBuilder.setProgress(100,totalPercent,false);
-                    Notification notification = notificationBuilder.build();
-                    startForeground(1,notification);
-                }*/
                 Log.d(TAG," uploadMultiFiles onProgress curPercent: " + curPercent + "  curIndex: " + curIndex + " currentPosition: " + currentPosition + " totalPercent:" + totalPercent + " total " + total);
             }
         });
-    }
-
-
-    /**
-     *  end the ObjectAnimator animation
-     *
-     */
-    private void endAnimator(ObjectAnimator animator,CheckBox checkBox,ImageView imageSyncView){
-        if(animator != null){
-            animator.end();
-            if(checkBox != null){
-                Log.d(TAG," endAnimator checkBox set false");
-                checkBox.setChecked(false);
-            }
-            if(imageSyncView != null) {
-                Log.d(TAG," endAnimator photo set sys upload img");
-                imageSyncView.setImageResource(android.R.drawable.stat_sys_upload);
-            }
-            Log.d(TAG," endAnimator ok.");
-        }
     }
 
     /**
@@ -431,11 +362,9 @@ public class PhotoManagerService extends Service {
 
 
     /**
-     *
+     * this use to update UI in main thread.
      */
     private void resetMainFabButton(){
-        Message msg = new Message();
-        msg.what = Utils.MSG_UPLOAD_FINISH;
-        mHandler.sendMessage(msg);
+        uiPresenter.sendMsgToMain(UIPresenter.MSG_UPLOAD_FINISH,-1);
     }
 }

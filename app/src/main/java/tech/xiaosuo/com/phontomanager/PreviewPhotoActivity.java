@@ -36,7 +36,7 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview_photo);
         mContext = getBaseContext();
-        mDatabaseHelper = new DataBaseHelper(mContext,null,null,DataBaseHelper.VERSION);
+        mDatabaseHelper = DataBaseHelper.getDbHelperInstance(mContext);//new DataBaseHelper(mContext,null,null,DataBaseHelper.VERSION);
         preImageView = (ImageView)findViewById(R.id.preview_photo_view);
         preDownloadView = (ImageView)findViewById(R.id.preview_download_cloud_photo);
         preDownloadView.setOnClickListener(this);

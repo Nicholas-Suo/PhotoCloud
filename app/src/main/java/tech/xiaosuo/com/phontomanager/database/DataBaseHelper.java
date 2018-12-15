@@ -47,7 +47,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             + PhotoInfoTable.COLUMN_IMAGE_IS_IN_CLOUD + " integer "
             + ")";
 
-    public DataBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    private DataBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, version);
     }
 

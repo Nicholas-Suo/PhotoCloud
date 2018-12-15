@@ -21,6 +21,7 @@ import cn.bmob.v3.datatype.BmobFile;
 import tech.xiaosuo.com.phontomanager.bean.ImageInfo;
 import tech.xiaosuo.com.phontomanager.bean.PhotoInfoTable;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
+import tech.xiaosuo.com.phontomanager.interfaces.UIPresenter;
 
 
 /**
@@ -55,7 +56,7 @@ public class DBUtils {
             }*/
            if(mHandler != null){
                Message msg = new Message();
-               msg.what = Utils.MSG_PLS_CHECK_PERMISSION;
+               msg.what = UIPresenter.MSG_PLS_CHECK_PERMISSION;
                mHandler.sendMessage(msg);
            }
             Log.d(TAG," scanImageFromPhone,has no read/write extarnal storage permission");

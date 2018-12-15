@@ -47,14 +47,14 @@ public class Utils {
     public static final String LINE_END = "\r\n";
     public static final String SINGLE_QUOT = "\"";
 
-    public static final int MSG_IMG_LIST_IS_EMPERTY = 0;
+/*    public static final int MSG_IMG_LIST_IS_EMPERTY = 0;
     public static final int MSG_UPDATE_NOTIFICATION = 1;
     public static final int MSG_NETWORK_IS_NOT_CONNECT = 2;
     public static final int MSG_BACKUP_IMG_FAIL = 3;
     public static final int MSG_PLS_CHECK_PERMISSION = 4;
     public static final int MSG_NO_NEED_BACKUP_OR_RESTORE = 5;
     public static final int MSG_SHOW_SUCCESS = 6;
-    public static final int MSG_UPLOAD_FINISH = 7;
+    public static final int MSG_UPLOAD_FINISH = 7;*/
     //network exception status;
     public static final int CONNECT_EXCEPTION = 0;
     public static final  int MALFORMS_URL_EXCEPTION = 1;//MalformedURLException
@@ -343,19 +343,19 @@ public class Utils {
     }
 
 
-    /**
+/*    *//**
      *  if upload success, we weill update the selected map value,detail to see PhotoRecylerAdapter
      *  because, if the holderView is recycler use,the animator is null,can not set checkbox enable true or false, the UI is not refresh when pull back to check UI.
      *  so,wei need update the selected map--->checkBoxStatusMap
      * @param position, the key in map.
-     */
+     *//*
     public static  void removeKeyFromSelectedMap(int position,PhotoRecylerAdapter adapter){
         Log.d(TAG," removeKeyFromSelectedMap ,the position is: " + position);
         if(position != -1 && adapter!= null && adapter.getCheckBoxStatusMap().containsKey(position)){//need remove the key ,value if success upload.
             adapter.getCheckBoxStatusMap().remove(position);
             Log.d(TAG," removeKeyFromSelectedMap ,remove ok");
         }
-    }
+    }*/
 
 
 }

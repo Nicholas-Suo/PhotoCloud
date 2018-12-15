@@ -84,7 +84,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         smartRefreshLayout = (SmartRefreshLayout)findViewById(R.id.smart_refresh_layout);
         smartRefreshLayout.setEnableLoadMore(true);
         smartRefreshLayout.setEnableRefresh(true);
-
+        mDatabaseHelper = DataBaseHelper.getDbHelperInstance(mContext);
 
         cloudImageListView = (ListView)findViewById(R.id.cloud_listview);
         cloudImageListView.setOnItemClickListener(this);
@@ -145,7 +145,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
                 loadDataFromServer(0);
             }
         });
-        mDatabaseHelper = new DataBaseHelper(mContext,null,null,DataBaseHelper.VERSION);
+      //  mDatabaseHelper = new DataBaseHelper(mContext,null,null,DataBaseHelper.VERSION);
         loadDataFromServer(0);
     }
 
