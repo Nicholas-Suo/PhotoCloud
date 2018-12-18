@@ -99,7 +99,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ListView
+        <tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuListView
             android:id="@+id/cloud_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

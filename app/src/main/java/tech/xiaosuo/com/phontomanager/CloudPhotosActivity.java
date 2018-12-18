@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.icu.text.LocaleDisplayNames;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +52,10 @@ import cn.bmob.v3.listener.UpdateListener;
 import tech.xiaosuo.com.phontomanager.bean.ImageInfo;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 import tech.xiaosuo.com.phontomanager.database.DataBaseHelper;
+import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenu;
+import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuCreator;
+import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuItem;
+import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuListView;
 import tech.xiaosuo.com.phontomanager.tools.DBUtils;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
@@ -56,7 +63,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
 
     private static final String TAG = "CloudPhotosActivity";
     Toolbar toolbar;
-    ListView cloudImageListView;
+    SwipeMenuListView cloudImageListView;
     CloudImageAdapter cloudImageAdapter;
     Context mContext;
     List<ImageInfo> mList;
@@ -86,7 +93,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         smartRefreshLayout.setEnableRefresh(true);
         mDatabaseHelper = DataBaseHelper.getDbHelperInstance(mContext);
 
-        cloudImageListView = (ListView)findViewById(R.id.cloud_listview);
+        cloudImageListView = (SwipeMenuListView)findViewById(R.id.cloud_listview);
         cloudImageListView.setOnItemClickListener(this);
        // registerForContextMenu(cloudImageListView);
       //  cloudImageListView.setOnCreateContextMenuListener(this);
@@ -110,7 +117,9 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
 
         cloudImageAdapter = new CloudImageAdapter(mContext);
         cloudImageAdapter.setListener(this);
+       // cloudImageListView.setAdapter(cloudImageAdapter);
         cloudImageListView.setAdapter(cloudImageAdapter);
+        configSwipeMenu();
         mList = new ArrayList<ImageInfo>();
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -722,6 +731,62 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         }
     }
 
+    /**
+     * configSwipeMenu, set the swipe menu item.
+     */
+    private void configSwipeMenu(){
+        // step 1. create a MenuCreator
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "open" item
+                SwipeMenuItem openItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                        0xCE)));
+                // set item width
+                openItem.setWidth(dp2px(90));
+                // set item title
+                openItem.setTitle("Open");
+                // set item title fontsize
+                openItem.setTitleSize(18);
+                // set item title font color
+                openItem.setTitleColor(Color.WHITE);
+                // add to menu
+                menu.addMenuItem(openItem);
+
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                // set item width
+                deleteItem.setWidth(dp2px(90));
+                // set a icon
+                deleteItem.setIcon(R.mipmap.ic_delete);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        // set creator
+        if(cloudImageListView != null){
+            cloudImageListView.setMenuCreator(creator);
+        }
+
+    }
+
+    /**
+     *
+     * @param dp
+     * @return
+     */
+    private int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                getResources().getDisplayMetrics());
+    }
     /*******************************Bmob interface,for multi file and data delete******************
      批量删除文件
 
