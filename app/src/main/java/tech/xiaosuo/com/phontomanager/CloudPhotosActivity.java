@@ -591,6 +591,8 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
                 final HashMap<ImageInfo,Integer> seletedData = cloudImageAdapter.getCloudSelectedPhotoData();
 
                 if(seletedData == null || seletedData.isEmpty()){
+                      Log.d(TAG," the selected item is null.");
+                      dialog.dismiss();
                       return;
                 }
                 final List<BmobObject> imageInfoList = new ArrayList<BmobObject>();

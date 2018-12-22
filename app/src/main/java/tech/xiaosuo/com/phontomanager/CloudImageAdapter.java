@@ -2,6 +2,7 @@ package tech.xiaosuo.com.phontomanager;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -240,6 +241,7 @@ public class CloudImageAdapter extends BaseAdapter {
                 selectedCount++;
             }
         }*/
+        selectedCount = swipeMenuListView.getCheckedItemCount();
         return selectedCount;
     }
 
@@ -259,6 +261,20 @@ public class CloudImageAdapter extends BaseAdapter {
      */
     public  HashMap<ImageInfo,Integer> getCloudSelectedPhotoData(){
         HashMap<ImageInfo,Integer> selectedMap = null;
+        SparseBooleanArray positionArray = swipeMenuListView.getCheckedItemPositions();
+        if(positionArray == null || positionArray.size() == 0){
+            Log.d(TAG," get cloud selected data is null.");
+           return null;
+        }
+        for(int i=0;i<positionArray.size();i++){
+           int position =  positionArray.keyAt(i);
+           boolean isSelected = positionArray.get(position);
+           Log.d(TAG," get cloud selected data ,the position is: " + position + " the isSelected is: " + isSelected );
+           if(isSelected){
+               ImageInfo imageInfo = getItem(position);
+               selectedMap.put(imageInfo,position);
+           }
+        }
 /*            if(checkBoxStatusMap != null){
                 selectedMap = new HashMap<ImageInfo,Integer>();
                 for(Integer position : checkBoxStatusMap.keySet()){
