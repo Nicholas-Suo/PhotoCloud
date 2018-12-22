@@ -18,6 +18,7 @@ import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -82,6 +83,8 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
     ImageView cloudDownloadView;
     boolean isSelectAll = false;
     int downloadCount = 0;
+    boolean isSelectMode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +97,9 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         mDatabaseHelper = DataBaseHelper.getDbHelperInstance(mContext);
 
         cloudImageListView = (SwipeMenuListView)findViewById(R.id.cloud_listview);
+
         cloudImageListView.setOnItemClickListener(this);
+        cloudImageListView.setOnItemLongClickListener(this);
        // registerForContextMenu(cloudImageListView);
       //  cloudImageListView.setOnCreateContextMenuListener(this);
 
@@ -115,7 +120,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         cloudDownloadView = (ImageView)findViewById(R.id.cloud_download);
         cloudDownloadView.setOnClickListener(this);
 
-        cloudImageAdapter = new CloudImageAdapter(mContext);
+        cloudImageAdapter = new CloudImageAdapter(mContext,cloudImageListView);
         cloudImageAdapter.setListener(this);
        // cloudImageListView.setAdapter(cloudImageAdapter);
         cloudImageListView.setAdapter(cloudImageAdapter);
@@ -204,7 +209,17 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+/*        if(isSelectMode){
+            return;
+        }*/
          Log.d(TAG," onItemClick position is: " + position);
+        if(cloudImageListView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){
+            Log.d(TAG," onItemClick , is multichoice mode,set item checked .");
+            updateSelectedItemCount(cloudImageListView.getCheckedItemCount(),cloudImageAdapter.getCount());
+            cloudImageAdapter.notifyDataSetChanged();
+            return;
+        }
+
         ImageInfo imageInfo = (ImageInfo)cloudImageAdapter.getItem(position);
         previewPhoto(imageInfo,position);
         //previewPhoto(imageInfo.getFile().getUrl());
@@ -213,6 +228,9 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG," onItemLongClick position is: " + position);
+        entryMultiSelectMode(position);
+    //    onCloudItemLongClickListener(position);
+        updateSelectedItemCount(1,cloudImageAdapter.getCount());
         return true;
     }
 
@@ -442,11 +460,12 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
     }
     @Override
     public void onCloudItemLongClickListener(int position) {
-        disablePullRefreshLoadMore();
+/*        disablePullRefreshLoadMore();
         showSelectToolbarLayout(true);
         showBottomLayout(true);
         //cloudImageAdapter.setCloudData(mList);
-        cloudImageAdapter.notifyDataSetChanged();
+        cloudImageAdapter.notifyDataSetChanged();*/
+        entryMultiSelectMode(position);
 
     }
 
@@ -485,6 +504,9 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
                 isSelectAll = false;
             }
            updateSelectAllView(isSelectAll);
+            if(count == 0){ //if the count is 0, no selected item,need exit the multi choice mode.
+                cancelCloudSelectMode();
+            }
     }
 
     /**
@@ -680,11 +702,13 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
      *  cancel cloud select mode,entry normal mode.
      */
     private void cancelCloudSelectMode(){
+        cloudImageListView.clearChoices();
+        cloudImageListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
         showSelectToolbarLayout(false);
         showBottomLayout(false);
-        if(cloudImageAdapter != null){
+/*        if(cloudImageAdapter != null){
             cloudImageAdapter.setCurrMode(CloudImageAdapter.NORMAL_MODE);
-        }
+        }*/
         enablePullRefreshLoadMore();
     }
 
@@ -786,6 +810,36 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+    /**
+     *
+     * entry multiselectMode.
+     * @param position  the select item position.
+     */
+    private void entryMultiSelectMode(int position){
+/*        if(isSelectMode){
+           return;
+        }
+       // isSelectMode = true;*/
+       if(cloudImageListView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){
+            Log.d(TAG," listview is at choice mode multi modal,return .");
+            return;
+        }
+        cloudImageListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        cloudImageListView.setItemChecked(position,true);
+        disablePullRefreshLoadMore();
+        showSelectToolbarLayout(true);
+        showBottomLayout(true);
+        //cloudImageAdapter.setCloudData(mList);
+        cloudImageAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * exit the mulit select mode
+     */
+    private void exitMultiSelectMode(){
+        isSelectMode = false;
     }
     /*******************************Bmob interface,for multi file and data delete******************
      批量删除文件

@@ -11,8 +11,14 @@ origanize code,refresh ui need in main thread using msg handler
 20181218:
 add the swipe lib for cloud activity.
 ----------------------------------------
+20181219:
+长按item进入多选模式
+多选模式下，单选可选中，刷新计数；
+非多选模式下，可单击预览，滑动删除和下载
+----------------------------------------
 5.download error. delete ui error:checkbox
 1. 整理代码，采用MVP设计模式整理--continue..
 2. 整理界面---waiting..
 3. 增加微信，支付宝，手机短信验证登录
 4. 增加找回密码功能
+5。 在云端的图片是不是应该过滤掉？

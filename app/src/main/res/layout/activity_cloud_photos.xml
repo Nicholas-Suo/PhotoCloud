@@ -105,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/cloud_select_bottom_layout"
             android:layout_alignParentTop="true"
+            android:divider="@null"
         />
         <LinearLayout
             android:id="@+id/cloud_select_bottom_layout"

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <CheckBox
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_cloud_selector"
+    >
+<!--    android:background="@drawable/item_cloud_selector"-->
+<!--    <CheckBox
         android:id="@+id/cloud_check_box"
         android:layout_centerVertical="true"
         android:visibility="gone"
@@ -14,6 +17,13 @@
         android:layout_height="@dimen/cloud_icon_width"
         android:src="@mipmap/ic_launcher"
         android:layout_toRightOf="@+id/cloud_check_box"
+        android:scaleType="centerCrop"
+        />-->
+    <ImageView
+        android:id="@+id/cloud_image"
+        android:layout_width="@dimen/cloud_icon_width"
+        android:layout_height="@dimen/cloud_icon_width"
+        android:src="@mipmap/ic_launcher"
         android:scaleType="centerCrop"
         />
     <LinearLayout
