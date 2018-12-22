@@ -260,7 +260,7 @@ public class CloudImageAdapter extends BaseAdapter {
      * @return
      */
     public  HashMap<ImageInfo,Integer> getCloudSelectedPhotoData(){
-        HashMap<ImageInfo,Integer> selectedMap = null;
+        HashMap<ImageInfo,Integer> selectedMap = new HashMap<ImageInfo,Integer>();;
         SparseBooleanArray positionArray = swipeMenuListView.getCheckedItemPositions();
         if(positionArray == null || positionArray.size() == 0){
             Log.d(TAG," get cloud selected data is null.");
@@ -268,9 +268,9 @@ public class CloudImageAdapter extends BaseAdapter {
         }
         for(int i=0;i<positionArray.size();i++){
            int position =  positionArray.keyAt(i);
-           boolean isSelected = positionArray.get(position);
-           Log.d(TAG," get cloud selected data ,the position is: " + position + " the isSelected is: " + isSelected );
-           if(isSelected){
+           boolean isChecked = positionArray.get(position);
+           Log.d(TAG," get cloud selected data ,the position is: " + position + " the value is: " + isChecked);
+           if(isChecked){
                ImageInfo imageInfo = getItem(position);
                selectedMap.put(imageInfo,position);
            }
