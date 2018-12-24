@@ -337,11 +337,11 @@ public class SwipeMenuLayout extends FrameLayout {
 		}
 	}
 
-/*	public void setSwipEnable(boolean swipEnable){
+	public void setSwipEnable(boolean swipEnable){
 		mSwipEnable = swipEnable;
 	}
 
 	public boolean getSwipEnable(){
 		return mSwipEnable;
-	}*/
+	}
 }

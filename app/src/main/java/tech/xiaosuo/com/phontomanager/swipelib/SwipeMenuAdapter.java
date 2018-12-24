@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.WrapperListAdapter;
 
 import tech.xiaosuo.com.phontomanager.R;
@@ -156,9 +157,14 @@ public class SwipeMenuAdapter implements WrapperListAdapter,
      * when the listview is muti choice mode,selected item need update the backgroud to show isSelected.
      * @param position the item position.
      */
-    private void updateItemViewBackgrond(int position,View convertView,SwipeMenuListView listView){
+    private void updateItemViewBackgrond(int position,SwipeMenuLayout convertView,SwipeMenuListView listView){
         boolean isChecked = listView.isItemChecked(position);
         Log.d(TAG," updateItemViewBackgrond: position: "+ position + " isChecked: " + isChecked );
+        if(listView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){
+            convertView.setSwipEnable(false);
+        }else{
+            convertView.setSwipEnable(true);
+        }
         if(isChecked){
             convertView.setBackgroundResource(R.drawable.item_selected);
         }else{
