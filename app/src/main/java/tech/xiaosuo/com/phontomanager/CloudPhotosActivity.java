@@ -540,7 +540,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
      * @return
      */
     private boolean isSelectedModeAm(){
-        if(cloudImageAdapter != null && cloudImageAdapter.getCurrMode() == CloudImageAdapter.SELECT_MODE){
+        if(cloudImageListView != null && cloudImageListView.getChoiceMode() == ListView.CHOICE_MODE_MULTIPLE){ //&& cloudImageAdapter.getCurrMode() == CloudImageAdapter.SELECT_MODE
             return true;
         }else{
             return false;

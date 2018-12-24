@@ -29,22 +29,22 @@ public class CloudImageAdapter extends BaseAdapter {
     List<ImageInfo> cloudList;
     Context context;
     CloudImageListener listener;
-    HashMap<Integer,Boolean> checkBoxStatusMap;
+  //  HashMap<Integer,Boolean> checkBoxStatusMap;
     public static int NORMAL_MODE = 0;
     public static int SELECT_MODE = 1;
-    int currMode = NORMAL_MODE;
-    boolean refreshLayout = false;
+   // int currMode = NORMAL_MODE;
+   // boolean refreshLayout = false;
     SwipeMenuListView swipeMenuListView;
 
     public SwipeMenuListView getSwipeMenuListView() {
         return swipeMenuListView;
     }
 
-    public int getCurrMode() {
+/*    public int getCurrMode() {
         return currMode;
-    }
+    }*/
 
-    public void setCurrMode(int currMode) {
+/*    public void setCurrMode(int currMode) {
         this.currMode = currMode;
         if(currMode == NORMAL_MODE){
 
@@ -54,7 +54,7 @@ public class CloudImageAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         }
-    }
+    }*/
 
     public void setListener(CloudImageListener listener) {
         this.listener = listener;
@@ -63,7 +63,7 @@ public class CloudImageAdapter extends BaseAdapter {
     public CloudImageAdapter(Context context, SwipeMenuListView swipeMenuListView){
             this.context = context;
             this.swipeMenuListView = swipeMenuListView;
-            checkBoxStatusMap = new HashMap<Integer, Boolean>();
+           // checkBoxStatusMap = new HashMap<Integer, Boolean>();
     }
     public void setCloudData(List<ImageInfo> cloudList){
           this.cloudList = cloudList;
@@ -90,15 +90,17 @@ public class CloudImageAdapter extends BaseAdapter {
         boolean refreshItem = false;
         //reset the value,after entry selected mode.
 
-        if(currMode == SELECT_MODE && refreshLayout && convertView != null){
+/*
+        if(refreshLayout && convertView != null){//currMode == SELECT_MODE &&
              convertView = null;
            //  Log.d(TAG," need refresh the layout.");
              //refreshLayout = false;//reset the value,after entry selected mode.
          }
+*/
 
-         if(position == getCount()){
+ /*        if(position == getCount()){
              refreshLayout = false;//reset the value,after entry selected mode.
-         }
+         }*/
         // back to normal mode from selected mode, need reload the layout,for checkbox reset checked value.
 
         Log.d(TAG," need refresh the layout.refreshItem: " + refreshItem + " position: " + position);
