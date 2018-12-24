@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  *
- * @author wangshumin
+ * @author nicolas-suo
  * @date 2018-12-18
  *
  */
@@ -46,6 +46,8 @@ public class SwipeMenuView extends LinearLayout implements OnClickListener {
 	private void addItem(SwipeMenuItem item, int id) {
 		LayoutParams params = new LayoutParams(item.getWidth(),
 				LayoutParams.MATCH_PARENT);
+/*		LayoutParams params = new LayoutParams(item.getWidth(),
+				item.getHeight());*/
 		LinearLayout parent = new LinearLayout(getContext());
 		parent.setId(id);
 		parent.setGravity(Gravity.CENTER);

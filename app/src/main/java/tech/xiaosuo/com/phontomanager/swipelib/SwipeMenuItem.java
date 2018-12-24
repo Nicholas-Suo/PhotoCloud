@@ -20,7 +20,10 @@ public class SwipeMenuItem {
 	private int titleColor;
 	private int titleSize;
 	private int width;
+	private int height;
 
+	public static int DEFAULT_WIDTH = 90;
+	public static int DEFAULT_HEIGHT = 90;
 	public SwipeMenuItem(Context context) {
 		mContext = context;
 	}
@@ -93,4 +96,11 @@ public class SwipeMenuItem {
 		this.width = width;
 	}
 
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
 }

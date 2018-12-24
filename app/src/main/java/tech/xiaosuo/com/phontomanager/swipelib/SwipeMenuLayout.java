@@ -8,6 +8,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -139,7 +140,6 @@ public class SwipeMenuLayout extends FrameLayout {
 		mMenuView.setId(MENU_VIEW_ID);
 		mMenuView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
-
 		addView(mContentView);
 		addView(mMenuView);
 

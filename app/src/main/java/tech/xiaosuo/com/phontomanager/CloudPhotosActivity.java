@@ -773,7 +773,12 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
                 openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
                         0xCE)));
                 // set item width
-                openItem.setWidth(dp2px(90));
+                int width = (int)getResources().getDimension(R.dimen.cloud_icon_width);
+                int height = width;//(int)getResources().getDimension(R.dimen.cloud_icon_width);
+       /*         openItem.setWidth(dp2px(width));
+                openItem.setHeight(dp2px(height));*/
+                openItem.setWidth(width);
+                openItem.setHeight(height);
                 // set item title
                 openItem.setTitle("Open");
                 // set item title fontsize
@@ -790,7 +795,8 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
                 // set item width
-                deleteItem.setWidth(dp2px(90));
+                deleteItem.setWidth(width);
+                deleteItem.setHeight(height);
                 // set a icon
                 deleteItem.setIcon(R.mipmap.ic_delete);
                 // add to menu

@@ -36,6 +36,9 @@ public class CloudImageAdapter extends BaseAdapter {
     boolean refreshLayout = false;
     SwipeMenuListView swipeMenuListView;
 
+    public SwipeMenuListView getSwipeMenuListView() {
+        return swipeMenuListView;
+    }
 
     public int getCurrMode() {
         return currMode;
@@ -184,7 +187,7 @@ public class CloudImageAdapter extends BaseAdapter {
         Glide.with(context).load(url).into(holder.cloudImageView);
         holder.imageName.setText(imageInfo.getDisplayName());
         holder.imageTime.setText(imageInfo.getCreatedAt());
-        updateItemViewBackgrond(position,convertView);
+      //  updateItemViewBackgrond(position,convertView);
 /*       if(currMode == SELECT_MODE){
             boolean checked = checkBoxStatusMap.get(position).booleanValue();
             holder.checkBox.setChecked(checked);

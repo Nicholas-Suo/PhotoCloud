@@ -4,11 +4,13 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
+import tech.xiaosuo.com.phontomanager.R;
 import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuView.OnSwipeItemClickListener;
 
 /**
@@ -20,6 +22,7 @@ import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuView.OnSwipeItemClickLis
 public class SwipeMenuAdapter implements WrapperListAdapter,
 		OnSwipeItemClickListener {
 
+    private static final String TAG = "SwipeMenuAdapter";
     private ListAdapter mAdapter;
     private Context mContext;
     private SwipeMenuListView.OnMenuItemClickListener onMenuItemClickListener;
@@ -47,6 +50,7 @@ public class SwipeMenuAdapter implements WrapperListAdapter,
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SwipeMenuLayout layout = null;
+        SwipeMenuListView listView = (SwipeMenuListView) parent;
         if (convertView == null) {
             View contentView = mAdapter.getView(position, convertView, parent);
             SwipeMenu menu = new SwipeMenu(mContext);
@@ -55,7 +59,7 @@ public class SwipeMenuAdapter implements WrapperListAdapter,
             SwipeMenuView menuView = new SwipeMenuView(menu,
                     (SwipeMenuListView) parent);
             menuView.setOnSwipeItemClickListener(this);
-            SwipeMenuListView listView = (SwipeMenuListView) parent;
+           // SwipeMenuListView listView = (SwipeMenuListView) parent;
             layout = new SwipeMenuLayout(contentView, menuView,
                     listView.getCloseInterpolator(),
                     listView.getOpenInterpolator());
@@ -71,6 +75,7 @@ public class SwipeMenuAdapter implements WrapperListAdapter,
             boolean swipEnable = (((BaseSwipListAdapter) mAdapter).getSwipEnableByPosition(position));
             layout.setSwipEnable(swipEnable);
         }*/
+        updateItemViewBackgrond(position,layout,listView);
         return layout;
     }
 
@@ -147,4 +152,17 @@ public class SwipeMenuAdapter implements WrapperListAdapter,
         return mAdapter;
     }
 
+    /**
+     * when the listview is muti choice mode,selected item need update the backgroud to show isSelected.
+     * @param position the item position.
+     */
+    private void updateItemViewBackgrond(int position,View convertView,SwipeMenuListView listView){
+        boolean isChecked = listView.isItemChecked(position);
+        Log.d(TAG," updateItemViewBackgrond: position: "+ position + " isChecked: " + isChecked );
+        if(isChecked){
+            convertView.setBackgroundResource(R.drawable.item_selected);
+        }else{
+            convertView.setBackgroundResource(R.drawable.item_normal);
+        }
+    }
 }
