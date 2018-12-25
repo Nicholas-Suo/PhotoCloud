@@ -105,6 +105,7 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
     }
 
 
+
     /**
      * down load  the photo from server.
      * @param imageInfo
@@ -119,8 +120,21 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
             return;
         }
         File saveFile = Utils.getPhoneImageFile(imageInfo);//new File(imageInfo.getData());
+        if(saveFile == null){
+            Log.d(TAG," preview ,download ,saveFile is null");
+            Toast.makeText(mContext," Downlaod fail,file is null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.d(TAG," preview ,download ,saveFile path: "+ saveFile.getAbsolutePath());
         BmobFile file = imageInfo.getFile();
-        file.download(saveFile, new DownloadFileListener() {
+
+        if(file == null){
+            Log.d(TAG," preview ,download ,file is null");
+            Toast.makeText(mContext," Downlaod fail,file is null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        BmobFile bmobFile = new BmobFile(file.getFilename(),null,file.getUrl());
+        bmobFile.download(saveFile, new DownloadFileListener() {
 
             @Override
             public void onStart() {
@@ -129,14 +143,15 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void done(String savePath,BmobException e) {
+                Log.d(TAG,"  downloadFile -> download success...savePath: " + savePath);
                 if(e==null){
-                    Log.d(TAG,"  downloadFile -> download success...savePath: " + savePath);
+
                     DBUtils.insertRestoreImageInfoToDb(mContext,imageInfo);
                     Toast.makeText(mContext,R.string.download_finish,Toast.LENGTH_SHORT).show();
                     finish();
                 }else{
                     Log.d(TAG,"  downloadFile -> download fail...savePath: " +e.getErrorCode()+","+e.getMessage());
-                    String msg = "downloadFile -> download fail...savePath: " +e.getErrorCode()+","+e.getMessage();
+                    String msg = "downloadFile -> download fail...savePath: " + savePath +e.getErrorCode()+","+e.getMessage();
                     Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
                 }
             }

@@ -302,7 +302,7 @@ public class Utils {
     public static File getPhoneImageFile(ImageInfo imageInfo){
         File sdCard  = Environment.getExternalStorageDirectory();
 
-        //Log.d(TAG," sdCard path " + sdCard.getAbsolutePath());
+        Log.d(TAG," sdCard path " + sdCard.getAbsolutePath());
         // /storage/emulated/0/0/test/test.jpg
         // /storage/emulated/0/Pictures/chihuahua2-1.JPG
         // /storage/emulated/0/0/test.jpg
