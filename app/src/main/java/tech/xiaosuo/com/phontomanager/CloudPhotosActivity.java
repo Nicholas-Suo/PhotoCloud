@@ -770,8 +770,12 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         if(data == null){
             return;
         }
-        if(requestCode == Utils.PREVIEW_CLOUD_PHOTO_REQUEST_CODE){
+        int position = data.getIntExtra(Utils.PHOTO_IMAGEINFO_POSITION_KEY,-1);
+        if(requestCode == Utils.PREVIEW_CLOUD_PHOTO_REQUEST_CODE && resultCode == Utils.PREVIEW_DELETE_SUCCESS && position != -1){
            //int position =//need get the position ,startactivityForResult setResult.
+            mList.remove(position);//from preview activity ,after delete from cloud,wei need update the ui data,notifyDataChanged.
+            cloudImageAdapter.setCloudData(mList);
+            Toast.makeText(mContext,R.string.delet_success,Toast.LENGTH_SHORT).show();
         }
     }
 

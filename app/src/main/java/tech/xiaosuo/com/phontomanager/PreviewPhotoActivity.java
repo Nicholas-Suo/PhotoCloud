@@ -31,6 +31,7 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
     ImageInfo preImageInfo = null;
     Context mContext;
     DataBaseHelper mDatabaseHelper;
+    int prePosition = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,8 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
                Log.d(TAG," the preImageInfo is null from inten.");
               return;
            }
-           String url = preImageInfo.getFile().getFileUrl(); //(String)bundle.get(Utils.PHOTO_URL_KEY);
+            prePosition = bundle.getInt(Utils.PHOTO_IMAGEINFO_POSITION_KEY,-1);
+            String url = preImageInfo.getFile().getFileUrl(); //(String)bundle.get(Utils.PHOTO_URL_KEY);
             Glide.with(getApplicationContext()).load(url).error(R.mipmap.ic_launcher).into(preImageView);//.placeholder(R.mipmap.ic_launcher)
         }
     }
@@ -65,9 +67,7 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.preview_delete_cloud_photo:
                 Log.d(TAG," preview phonto begin delete");
-                deletPhotoInCloud(preImageInfo.getFile());
-                deleteDataInCloud(preImageInfo);
-                DBUtils.deleteDataFromDatabase(mDatabaseHelper.getWritableDatabase(),preImageInfo);
+                deleteOnePhotoInCloud(preImageInfo);
                 break;
                 default:
                     break;
@@ -89,7 +89,10 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
             public void done(BmobException e) {
                 if(e==null){
                     Log.d(TAG," the item data in imageinfo table  delete success");
-                    Toast.makeText(mContext,R.string.delet_success,Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(mContext,R.string.delet_success,Toast.LENGTH_SHORT).show();
+                    Intent backIntent = new Intent();
+                    backIntent.putExtra(Utils.PHOTO_IMAGEINFO_POSITION_KEY,prePosition);
+                    setResult(Utils.PREVIEW_DELETE_SUCCESS,backIntent);
                     finish();
                 }else{
                     Log.d(TAG," the item data in imageinfo table  delete fail "+e.getMessage()+","+e.getErrorCode());
@@ -166,5 +169,19 @@ public class PreviewPhotoActivity extends AppCompatActivity implements View.OnCl
                 }
             }
         });
+    }
+
+    /**
+     * delete one photo in cloud.
+     * @param imageInfo
+     */
+    private void deleteOnePhotoInCloud(ImageInfo imageInfo){
+        if(imageInfo == null || mDatabaseHelper == null || imageInfo.getFile() == null){
+            Log.d(TAG," preview photo,delete photo fail,null,return");
+            return;
+        }
+        deletPhotoInCloud(imageInfo.getFile());
+        deleteDataInCloud(imageInfo);
+        DBUtils.deleteDataFromDatabase(mDatabaseHelper.getWritableDatabase(),imageInfo);
     }
 }
