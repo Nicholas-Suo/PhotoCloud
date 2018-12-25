@@ -30,31 +30,11 @@ public class CloudImageAdapter extends BaseAdapter {
     Context context;
     CloudImageListener listener;
   //  HashMap<Integer,Boolean> checkBoxStatusMap;
-    public static int NORMAL_MODE = 0;
-    public static int SELECT_MODE = 1;
-   // int currMode = NORMAL_MODE;
-   // boolean refreshLayout = false;
     SwipeMenuListView swipeMenuListView;
 
     public SwipeMenuListView getSwipeMenuListView() {
         return swipeMenuListView;
     }
-
-/*    public int getCurrMode() {
-        return currMode;
-    }*/
-
-/*    public void setCurrMode(int currMode) {
-        this.currMode = currMode;
-        if(currMode == NORMAL_MODE){
-
-           if(checkBoxStatusMap != null){
-                checkBoxStatusMap.clear();
-                refreshLayout = false;
-                notifyDataSetChanged();
-            }
-        }
-    }*/
 
     public void setListener(CloudImageListener listener) {
         this.listener = listener;
@@ -89,20 +69,7 @@ public class CloudImageAdapter extends BaseAdapter {
         final ItemCloudHolder holder;
         boolean refreshItem = false;
         //reset the value,after entry selected mode.
-
-/*
-        if(refreshLayout && convertView != null){//currMode == SELECT_MODE &&
-             convertView = null;
-           //  Log.d(TAG," need refresh the layout.");
-             //refreshLayout = false;//reset the value,after entry selected mode.
-         }
-*/
-
- /*        if(position == getCount()){
-             refreshLayout = false;//reset the value,after entry selected mode.
-         }*/
         // back to normal mode from selected mode, need reload the layout,for checkbox reset checked value.
-
         Log.d(TAG," need refresh the layout.refreshItem: " + refreshItem + " position: " + position);
 
         if(convertView == null){
@@ -119,70 +86,6 @@ public class CloudImageAdapter extends BaseAdapter {
             holder = (ItemCloudHolder)convertView.getTag();
         }
 
-/*        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int selectedCount = 0;
-                if(currMode == SELECT_MODE){
-                    checkBoxStatusMap.put(Integer.valueOf(position),isChecked);
-                }
-                for(Integer position : checkBoxStatusMap.keySet()){
-                      boolean isSelected = checkBoxStatusMap.get(position).booleanValue();
-                     if(isSelected){
-                         selectedCount++;
-                     }
-                }
-                listener.updateSelectedItemCount(selectedCount,getCount());
-            }
-        });*/
-
-/*        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImageInfo imageInfo = (ImageInfo)getItem(position);
-                if(imageInfo == null){
-                   return;
-                }
-*//*                if(currMode == SELECT_MODE){
-                    boolean status = false;
-                    if(checkBoxStatusMap!=null && checkBoxStatusMap.containsKey(Integer.valueOf(position))){
-                         status = checkBoxStatusMap.get(Integer.valueOf(position)).booleanValue();
-                    }
-                    holder.checkBox.setChecked(!status);
-                    return;
-                }*//*
-
-              //  listener.previewCloudPhoto(imageInfo.getFile().getUrl());
-                Log.d(TAG," cloud item convert view onclick,preview photo");
-                listener.previewCloudPhoto(imageInfo,position);
-            }
-        });*/
-
-/*        convertView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if(currMode == SELECT_MODE){
-                    Log.d(TAG," select mode do nothing..return");
-                   return false;
-                }
-                currMode = SELECT_MODE;
-                refreshLayout = true;//when entry selected mode,need refresh the list item layout for checkbox do not refresh bug.
-                checkBoxStatusMap.clear();
-                for(int i=0;i<cloudList.size();i++){
-                    if(i == position){
-                        checkBoxStatusMap.put(Integer.valueOf(i),Boolean.TRUE);
-                    }else{
-                        checkBoxStatusMap.put(Integer.valueOf(i),Boolean.FALSE);
-                    }
-
-                }
-                if(listener != null){
-                    listener.onCloudItemLongClickListener(position);
-                    listener.updateSelectedItemCount(1,getCount());
-                }
-                return false;
-            }
-        });*/
         ImageInfo imageInfo = cloudList.get(position);
         String url = imageInfo.getFile().getFileUrl();//. "http://img1.imgtn.bdimg.com/it/u=3634103621,488471414&fm=27&gp=0.jpg";
         Log.d(TAG," position is: " + position + " the url is: " + url );
@@ -190,16 +93,6 @@ public class CloudImageAdapter extends BaseAdapter {
         holder.imageName.setText(imageInfo.getDisplayName());
         holder.imageTime.setText(imageInfo.getCreatedAt());
       //  updateItemViewBackgrond(position,convertView);
-/*       if(currMode == SELECT_MODE){
-            boolean checked = checkBoxStatusMap.get(position).booleanValue();
-            holder.checkBox.setChecked(checked);
-            holder.checkBox.setVisibility(View.VISIBLE);
-        }else{
-            if(holder.checkBox.getVisibility() == View.VISIBLE){
-                holder.checkBox.setVisibility(View.GONE);
-            }
-        }*/
-
         return convertView;
     }
 
@@ -207,14 +100,7 @@ public class CloudImageAdapter extends BaseAdapter {
      * seletedAll
      */
     public void seletedAll(){
-
-/*        if(currMode != SELECT_MODE){
-            return;
-        }*/
         int count = getCount();
-/*        for(int i=0;i<count;i++){
-            checkBoxStatusMap.put(Integer.valueOf(i),Boolean.TRUE);
-        }*/
        for(int i=0;i<count;i++){
            swipeMenuListView.setItemChecked(i,true);
        }
@@ -226,14 +112,6 @@ public class CloudImageAdapter extends BaseAdapter {
      * seletedAll
      */
     public void unseletedAll(){
-
-/*        if(currMode != SELECT_MODE){
-            return;
-        }*/
-
- /*       for(int i=0;i<getCount();i++){
-            checkBoxStatusMap.put(Integer.valueOf(i),Boolean.FALSE);
-        }*/
         swipeMenuListView.clearChoices();
         notifyDataSetChanged();
         listener.updateSelectedItemCount(0,getCount());
@@ -241,11 +119,6 @@ public class CloudImageAdapter extends BaseAdapter {
 
     private int getSelectedCount(){
         int selectedCount = 0;
-/*        for(Integer position : checkBoxStatusMap.keySet()){
-            if(checkBoxStatusMap.get(position).booleanValue()){
-                selectedCount++;
-            }
-        }*/
         selectedCount = swipeMenuListView.getCheckedItemCount();
         return selectedCount;
     }
@@ -280,22 +153,13 @@ public class CloudImageAdapter extends BaseAdapter {
                selectedMap.put(imageInfo,position);
            }
         }
-/*            if(checkBoxStatusMap != null){
-                selectedMap = new HashMap<ImageInfo,Integer>();
-                for(Integer position : checkBoxStatusMap.keySet()){
-                    if(checkBoxStatusMap.get(position).booleanValue()){
-                         ImageInfo imageInfo = getItem(position.intValue());
-                         selectedMap.put(imageInfo,position);
-                    }
-                }
-            }*/
             return selectedMap;
     }
 
-    /**
+/*    *//**
      * when the listview is muti choice mode,selected item need update the backgroud to show isSelected.
      * @param position the item position.
-     */
+     *//*
     private void updateItemViewBackgrond(int position,View convertView){
         boolean isChecked = swipeMenuListView.isItemChecked(position);
         Log.d(TAG," updateItemViewBackgrond: position: "+ position + " isChecked: " + isChecked );
@@ -304,10 +168,8 @@ public class CloudImageAdapter extends BaseAdapter {
         }else{
             convertView.setBackgroundResource(R.drawable.item_normal);
         }
-    }
-   /* public void removeCloudSelectMapData(Integer position){
-        checkBoxStatusMap.remove(position);
     }*/
+
     private class ItemCloudHolder{
           ImageView cloudImageView;
           TextView imageName;

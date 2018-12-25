@@ -54,18 +54,20 @@ import tech.xiaosuo.com.phontomanager.bean.ImageInfo;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 import tech.xiaosuo.com.phontomanager.database.DataBaseHelper;
 import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenu;
+import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuAdapter;
 import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuCreator;
 import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuItem;
 import tech.xiaosuo.com.phontomanager.swipelib.SwipeMenuListView;
 import tech.xiaosuo.com.phontomanager.tools.DBUtils;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
-public class CloudPhotosActivity extends AppCompatActivity implements AdapterView.OnItemClickListener , AdapterView.OnItemLongClickListener,CloudImageAdapter.CloudImageListener,View.OnClickListener {
+public class CloudPhotosActivity extends AppCompatActivity implements AdapterView.OnItemClickListener , AdapterView.OnItemLongClickListener,CloudImageAdapter.CloudImageListener,View.OnClickListener,SwipeMenuListView.OnMenuItemClickListener {
 
     private static final String TAG = "CloudPhotosActivity";
     Toolbar toolbar;
     SwipeMenuListView cloudImageListView;
     CloudImageAdapter cloudImageAdapter;
+    SwipeMenuAdapter swipeMenuAdapter;
     Context mContext;
     List<ImageInfo> mList;
     SmartRefreshLayout smartRefreshLayout;
@@ -125,6 +127,8 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
        // cloudImageListView.setAdapter(cloudImageAdapter);
         cloudImageListView.setAdapter(cloudImageAdapter);
         configSwipeMenu();
+        cloudImageListView.setOnMenuItemClickListener(this);
+
         mList = new ArrayList<ImageInfo>();
         smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -293,6 +297,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         Bundle bundle = new Bundle();
         if(imageInfo == null || position < 0){
           Log.d(TAG," previewPhoto the imageinfo is null");
+          return;
         }
         Log.d(TAG," previewPhoto to start preview activity");
         bundle.putSerializable(Utils.PHOTO_IMAGEINFO_KEY,imageInfo);
@@ -301,7 +306,20 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         startActivityForResult(intent,Utils.PREVIEW_CLOUD_PHOTO_REQUEST_CODE);
     }
 
-
+    /**
+     * delete one photo and the photo's information in the cloud.
+     * @param imageInfo
+     * @param position
+     */
+    private  void deletePhotoAndInforInCloud(ImageInfo imageInfo,int position){
+        if(imageInfo == null || position < 0){
+            Log.d(TAG," delete photo and information fail,params is error. null.return");
+           return;
+        }
+        deletPhotoInCloud(imageInfo.getFile());
+        deleteDataInCloud(imageInfo,position);
+        DBUtils.deleteDataFromDatabase(mDatabaseHelper.getWritableDatabase(),imageInfo);
+    }
     /**
      * delete the photo file from cloud.
      * @param bmobFile
@@ -848,6 +866,31 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
      */
     private void exitMultiSelectMode(){
         isSelectMode = false;
+    }
+
+    /**
+     * for open/delete icon click event.
+     * @param position  the position in swipemenuview
+     * @param menu   the menu list.
+     * @param index  the id in swipemenuview
+     * @return
+     */
+    @Override
+    public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+        Log.d(TAG," onMenuItemClick position is: " + position + " the index is: " + index);
+        ImageInfo imageInfo = (ImageInfo)cloudImageAdapter.getItem(position);
+        switch (index){
+            case 0://preview the photo in cloud.
+                previewPhoto(imageInfo,position);
+                break;
+            case 1: //delete the cloud photo
+                Log.d(TAG," onMenuItemClick,delete photo which is in cloud ");
+                deletePhotoAndInforInCloud(imageInfo,position);
+                break;
+             default:
+                 break;
+        }
+        return false;
     }
     /*******************************Bmob interface,for multi file and data delete******************
      批量删除文件
