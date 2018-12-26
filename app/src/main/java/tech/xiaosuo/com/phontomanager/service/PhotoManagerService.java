@@ -154,7 +154,11 @@ public class PhotoManagerService extends Service {
      * @param obj
      */
     private void insertBombObject(final ImageInfo obj){
-
+         if(obj == null){
+            Log.d(TAG," fuction:insertBombObject , params obj is null, return.");
+            return;
+         }
+        Log.d(TAG," fuction:insertBombObject , obj." + obj.toString());
         obj.save(new SaveListener<String>() {
             @Override
             public void done(String objectId,BmobException e) {

@@ -6,4 +6,7 @@
     <color name="colorGray">#CCCCCC</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorhighlight">#bf39b500</color>
+    <color name="colorLightGreen">#ff8bc34a</color><!-- light green 500 -->
 </resources>

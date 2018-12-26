@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/preview_bottom_layout"
         />
-
+<!--    android:background="@color/colorPrimary"-->
     <LinearLayout
         android:id="@+id/preview_bottom_layout"
         android:layout_width="match_parent"
@@ -21,17 +21,28 @@
         android:background="@color/colorPrimary"
         android:gravity="center_vertical"
         >
-
+<!--        android:src="@android:drawable/ic_menu_delete"-->
+<!--        <LinearLayout
+            style="@style/CloudBottomImageStyle"
+            android:orientation="vertical"
+            >-->
         <ImageView
             android:id="@+id/preview_delete_cloud_photo"
             style="@style/CloudBottomImageStyle"
-            android:src="@android:drawable/ic_menu_delete"
+            android:background="@drawable/ic_menu_delete_bg"
             />
+  <!--      </LinearLayout>-->
+<!--        <LinearLayout
+            style="@style/CloudBottomImageStyle"
+            android:orientation="vertical"
+        >-->
+<!--        android:src="@mipmap/ic_menu_download"-->
         <ImageView
             android:id="@+id/preview_download_cloud_photo"
             style="@style/CloudBottomImageStyle"
-            android:src="@mipmap/ic_menu_download"
+            android:background="@drawable/ic_menu_download_bg"
             />
-    </LinearLayout>
+       </LinearLayout>
+<!--    </LinearLayout>-->
 
 </RelativeLayout>

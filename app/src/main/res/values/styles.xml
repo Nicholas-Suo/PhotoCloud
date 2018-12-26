@@ -26,5 +26,6 @@
         <item name="android:layout_width">0dp</item><!--@dimen/cloud_bottom_item_width-->
         <item name="android:layout_height">@dimen/cloud_bottom_item_width</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_horizontal</item>
     </style>
 </resources>

@@ -24,7 +24,7 @@
     <dimen name="toolbar_title_margin_right">30dp</dimen>
     <dimen name="cloud_bottom_height">60dp</dimen>
     <dimen name="cloud_bottom_item_height">30dp</dimen>
-    <dimen name="cloud_bottom_item_width">30dp</dimen>
+    <dimen name="cloud_bottom_item_width">48dp</dimen>
     <dimen name="cloud_bottom_item_margin_left">20dp</dimen>
     <dimen name="cloud_bottom_item_margin_right">20dp</dimen>
     <dimen name="layout_margin_right">8dp</dimen>
