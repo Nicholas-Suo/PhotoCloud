@@ -1301,6 +1301,7 @@ private Handler mainHandler = new Handler(){
      */
     private void logOut(){
         UserInfo.logOut();
+        DBUtils.clearDbData(mDatabaseHelper.getWritableDatabase());
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
         finish();

@@ -224,4 +224,16 @@ public class DBUtils {
         int id = sqLiteDatabase.delete(PhotoInfoTable.PHOTO_INFO_TABLE,where,new String[]{imageInfo.getMd5(),imageInfo.getData()});
         Log.d(TAG," deleteDataFromDatabase to phone database,the id is: " + id);
     }
+
+    /**
+     * clear the database data.,after logout
+     * @param sqLiteDatabase
+     */
+    public static void clearDbData(SQLiteDatabase sqLiteDatabase){
+        if(sqLiteDatabase == null){
+            return;
+        }
+        sqLiteDatabase.delete(PhotoInfoTable.PHOTO_INFO_TABLE,null,null);
+
+    }
 }

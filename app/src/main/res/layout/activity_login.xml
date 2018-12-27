@@ -29,7 +29,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
+            <LinearLayout
+                android:id="@+id/password_linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -61,6 +67,45 @@
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
+          </LinearLayout>
+            <LinearLayout
+                android:id="@+id/identify_code_linearlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/identify_phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/phone_number"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/identify_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/indentify_code"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:singleLine="true" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
           <RelativeLayout
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
@@ -74,16 +119,25 @@
                 android:layout_alignParentLeft="true"
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
-
+    <!--          android:layout_alignParentRight="true"-->
            <Button
                 android:id="@+id/user_register_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="@dimen/button_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin_top"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/user_login_button"
                 android:text="@string/action_register_short"
                 android:textStyle="bold" />
+              <Button
+                  android:id="@+id/indentify_code_login"
+                  style="?android:textAppearanceSmall"
+                  android:layout_width="@dimen/button_width"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/button_margin_top"
+                  android:layout_alignParentRight="true"
+                  android:text="@string/indentify_code_login"
+                  android:textStyle="bold" />
        </RelativeLayout>
 
         </LinearLayout>

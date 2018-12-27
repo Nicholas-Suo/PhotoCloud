@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity  {
     private static final int LOGIN_FAIL=-1;
     private static final int SERVER_ERROR = 1;
     private static final int IO_EXCEPTION = 2;
+
    // BackUpApplication mApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

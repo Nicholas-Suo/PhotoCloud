@@ -12,7 +12,7 @@
     <string name="un_select_all">Cancel Select All</string>
     <string name="no_select_photo">There are not photos to upload</string>
     <!-- Strings related to login -->
-    <string name="prompt_username">Username</string>
+    <string name="prompt_username">Username/PhoneNumber</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -91,4 +91,7 @@
     <string name="delet_fail">Delete fail</string>
     <string name="cloud_photo">Cloud Photo</string>
     <string name="log_out">Log Out</string>
+    <string name="phone_number">PhoneNumber</string>
+    <string name="indentify_code">Indentify Code</string>
+    <string name="indentify_code_login">Sms Code</string>
 </resources>
