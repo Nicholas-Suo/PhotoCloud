@@ -78,6 +78,7 @@
     <string name="download_finish">下载完成</string>
     <string name="delet_success">删除成功</string>
     <string name="delet_fail">删除失败</string>
+    <string name="cloud_photo">云端照片</string>
     <!--      <string name="download_finish_number">已下载文件数：</string>
     <string name="total">总数：</string>
        <string name="un_need_download_number"></string>-->

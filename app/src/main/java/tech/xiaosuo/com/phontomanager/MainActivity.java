@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity
     MenuItem selectButton;
     FloatingActionButton fab;
     ObjectAnimator uploadAnimator;
+    TextView userNameView;
+    TextView registerPhoneNumberView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +130,8 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        initNavHeaderUserInfo();//for user infor display.
+
         mContext = getApplicationContext();
         progressLayout = (LinearLayout) findViewById(R.id.progress_layout);
         mProgressBar = (ContentLoadingProgressBar)findViewById(R.id.loading_progressbar);
@@ -1277,5 +1279,17 @@ private Handler mainHandler = new Handler(){
             adapter.getCheckBoxStatusMap().remove(position);
             Log.d(TAG," removeKeyFromSelectedMap ,remove ok");
         }
+    }
+
+    /**
+     *
+     * if login success,t
+     * he navigation need get the user name and phone number.for ui display.
+     */
+    private void initNavHeaderUserInfo(){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        userNameView = (TextView)navigationView.getHeaderView(0).findViewById(R.id.register_username);
+        registerPhoneNumberView = (TextView)navigationView.getHeaderView(0).findViewById(R.id.register_phone_number);
     }
 }

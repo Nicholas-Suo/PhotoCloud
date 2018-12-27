@@ -89,4 +89,5 @@
     <string name="download_finish">Download finish</string>
     <string name="delet_success">Delete success</string>
     <string name="delet_fail">Delete fail</string>
+    <string name="cloud_photo">Cloud Photo</string>
 </resources>
