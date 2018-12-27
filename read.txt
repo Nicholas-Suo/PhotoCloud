@@ -1,3 +1,13 @@
+
+即时聊天案例源码：https://github.com/bmob/BmobIMSDK4Android
+
+图文社区案例源码：https://git.oschina.net/v7/Wonderful 这个案例是猿圈媛圈开发团队提供的。
+
+校园小菜案例源码：https://github.com/bmob/Shop 这个案例是湖工大的朋友提供的。
+
+社交分享案例源码：https://github.com/bmob/bmob-android-social-share 这个是金刚锁开发者提供的
+
+第三方登录案例源码：https://github.com/bmob/bmob-android-demo-thirdpartylogin 包含第三方登录和登录后获取用户信息的源码
 20181214:
 Add DBHelper single instance,
 ADD UIPresenter interface.

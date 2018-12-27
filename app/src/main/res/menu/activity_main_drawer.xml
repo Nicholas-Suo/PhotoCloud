@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <group android:checkableBehavior="single">
+   <!-- android:checkableBehavior="single"-->
+    <group >
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/cloud_photo" />
+        <item android:id="@+id/logout"
+            android:title="@string/log_out"
+            android:icon="@drawable/ic_menu_send"
+            />
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
             android:title="Import"
             android:visible="false"
             />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/cloud_photo" />
+
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
@@ -24,15 +29,18 @@
             android:title="Tools" />
     </group>
 
-    <item android:title="Communicate" android:visible="false">
+    <item android:title="Communicate"  android:visible="false">
         <menu>
+
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
+                android:visible="false"
                 android:title="Share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
+                android:visible="false"
                 android:title="Send" />
         </menu>
     </item>

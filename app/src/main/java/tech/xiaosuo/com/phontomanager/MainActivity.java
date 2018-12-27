@@ -130,8 +130,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        initNavHeaderUserInfo();//for user infor display.
-
         mContext = getApplicationContext();
         progressLayout = (LinearLayout) findViewById(R.id.progress_layout);
         mProgressBar = (ContentLoadingProgressBar)findViewById(R.id.loading_progressbar);
@@ -224,6 +222,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        initNavHeaderUserInfo();//for user infor display.
         if(mRecylerAdapter != null){
             mRecylerAdapter.updateSyncStatusMap();
         }
@@ -310,6 +309,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
+        } else if(id == R.id.logout){
+            logOut();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -1290,6 +1291,18 @@ private Handler mainHandler = new Handler(){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         userNameView = (TextView)navigationView.getHeaderView(0).findViewById(R.id.register_username);
+        userNameView.setText(bmobUser.getUsername());
         registerPhoneNumberView = (TextView)navigationView.getHeaderView(0).findViewById(R.id.register_phone_number);
+        registerPhoneNumberView.setText(bmobUser.getMobilePhoneNumber());
+    }
+
+    /**
+     * logout the user.
+     */
+    private void logOut(){
+        UserInfo.logOut();
+        Intent intent = new Intent(this,LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -90,4 +90,5 @@
     <string name="delet_success">Delete success</string>
     <string name="delet_fail">Delete fail</string>
     <string name="cloud_photo">Cloud Photo</string>
+    <string name="log_out">Log Out</string>
 </resources>
