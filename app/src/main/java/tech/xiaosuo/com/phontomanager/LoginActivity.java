@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -148,11 +149,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            if(loginType == PASSWORD_LOGIN){
+            int loginType = getLoginType();
+            Log.d(TAG," the login type is: " + loginType);
+            switch (loginType){
+                case PASSWORD_LOGIN:
+                    LoginByPassword(username,password);
+                    break;
+                case SMS_CODE_LOGIN:
+                    LoginBySmsCode(username,password);
+                    break;
+                default:
+                    break;
+            }
+/*            if(getLoginType() == PASSWORD_LOGIN){
                 LoginByPassword(username,password);
             }else if(loginType == SMS_CODE_LOGIN){
                 LoginBySmsCode(username,password);
-            }
+            }*/
 /*            BmobUser.loginByAccount(username, password, new LogInListener<UserInfo>() {
 
                 @Override
@@ -282,20 +295,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      */
     private void updateStringByLoginType(int loginType){
 
+           mUserNameView.setText(null);
+           mPasswordView.setText(null);//we need clear the password text.
            switch (loginType){
                case PASSWORD_LOGIN:
+                   getSmsCodeButton.setVisibility(View.GONE);
                    userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
                    //passWordInputLayout.setHint(getResources().getString(R.string.prompt_password));
+                   mUserNameView.setInputType(InputType.TYPE_CLASS_TEXT);
                    mPasswordView.setHint(getResources().getString(R.string.prompt_password));
                    smsCodeButton.setText(R.string.sms_code);
                    break;
                case SMS_CODE_LOGIN:
+                   getSmsCodeButton.setVisibility(View.VISIBLE);
                    userNameInputLayout.setHint(getResources().getString(R.string.phone_number));
                    //passWordInputLayout.setHint(getResources().getString(R.string.sms_code));
+                   mUserNameView.setInputType(InputType.TYPE_CLASS_PHONE);
                    mPasswordView.setHint(getResources().getString(R.string.sms_code));
                   smsCodeButton.setText(R.string.username_password_login);
                    break;
                default:
+                   getSmsCodeButton.setVisibility(View.GONE);
                    userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
                    mPasswordView.setHint(getResources().getString(R.string.prompt_password));
                    smsCodeButton.setText(R.string.sms_code);
@@ -344,6 +364,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         BmobUser.loginBySMSCode(phone, smsCode, new LogInListener<BmobUser>() {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
+                showProgress(false);
                 if (e == null) {
                     Log.d(TAG,"login success by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
                     Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
@@ -381,6 +402,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             }
         });
+    }
+
+    public int getLoginType() {
+        return loginType;
     }
 }
 
