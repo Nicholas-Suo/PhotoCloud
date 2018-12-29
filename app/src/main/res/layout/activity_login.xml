@@ -34,9 +34,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
                 >
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/username_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -51,6 +51,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/password_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -68,11 +69,12 @@
 
             </android.support.design.widget.TextInputLayout>
           </LinearLayout>
-            <LinearLayout
-                android:id="@+id/identify_code_linearlayout"
+            <!--<LinearLayout
+                android:id="@+id/sms_code_linearlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -96,7 +98,7 @@
                         android:id="@+id/identify_code"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/indentify_code"
+                        android:hint="@string/sms_code"
                         android:imeActionId="@+id/login"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"
@@ -105,16 +107,22 @@
                         android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
-          <RelativeLayout
+            </LinearLayout>-->
+<!--          <RelativeLayout
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-          >
+          >-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+               <!-- android:layout_width="@dimen/button_width"-->
             <Button
                 android:id="@+id/user_login_button"
                 style="?android:textAppearanceSmall"
-                android:layout_width="@dimen/button_width"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginTop="@dimen/button_margin_top"
                 android:layout_alignParentLeft="true"
                 android:text="@string/action_sign_in_short"
@@ -123,8 +131,9 @@
            <Button
                 android:id="@+id/user_register_button"
                 style="?android:textAppearanceSmall"
-                android:layout_width="@dimen/button_width"
-                android:layout_height="wrap_content"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
                 android:layout_marginTop="@dimen/button_margin_top"
                 android:layout_toLeftOf="@+id/user_login_button"
                 android:text="@string/action_register_short"
@@ -132,13 +141,15 @@
               <Button
                   android:id="@+id/indentify_code_login"
                   style="?android:textAppearanceSmall"
-                  android:layout_width="@dimen/button_width"
+                  android:layout_width="0dp"
                   android:layout_height="wrap_content"
+                  android:layout_weight="1"
                   android:layout_marginTop="@dimen/button_margin_top"
                   android:layout_alignParentRight="true"
                   android:text="@string/indentify_code_login"
                   android:textStyle="bold" />
-       </RelativeLayout>
+            </LinearLayout>
+       <!--</RelativeLayout>-->
 
         </LinearLayout>
     </ScrollView>

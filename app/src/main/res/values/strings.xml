@@ -92,6 +92,6 @@
     <string name="cloud_photo">Cloud Photo</string>
     <string name="log_out">Log Out</string>
     <string name="phone_number">PhoneNumber</string>
-    <string name="indentify_code">Indentify Code</string>
+    <string name="sms_code">Sms Code</string>
     <string name="indentify_code_login">Sms Code</string>
 </resources>

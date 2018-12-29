@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import cn.bmob.v3.BmobUser;
@@ -27,7 +29,7 @@ import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -45,6 +47,13 @@ public class LoginActivity extends AppCompatActivity  {
     private static final int LOGIN_FAIL=-1;
     private static final int SERVER_ERROR = 1;
     private static final int IO_EXCEPTION = 2;
+    private final int PASSWORD_LOGIN = 0;
+    private final int SMS_CODE_LOGIN = 1;
+    private int loginType = PASSWORD_LOGIN;
+    TextInputLayout userNameInputLayout;
+    TextInputLayout passWordInputLayout;
+/*    LinearLayout passwordLayout;
+    LinearLayout smsCodeLayout;*/
 
    // BackUpApplication mApp;
     @Override
@@ -56,6 +65,8 @@ public class LoginActivity extends AppCompatActivity  {
         mActivity = this;
      //   mApp = (BackUpApplication)getApplication();
         // Set up the login form.
+        userNameInputLayout = (TextInputLayout)findViewById(R.id.username_input_layout);
+        passWordInputLayout = (TextInputLayout)findViewById(R.id.password_input_layout);
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.user_name);
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -71,23 +82,17 @@ public class LoginActivity extends AppCompatActivity  {
         });
 
         Button mUserSignInButton = (Button) findViewById(R.id.user_login_button);
-        mUserSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        mUserSignInButton.setOnClickListener(this);
         Button registerButton = (Button)findViewById(R.id.user_register_button);
-        registerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
-                startActivity(intent);
-                //finish();
-            }
-        });
+        registerButton.setOnClickListener(this);
+        Button smsCodeButton = (Button)findViewById(R.id.indentify_code_login);
+        smsCodeButton.setOnClickListener(this);
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+  /*      passwordLayout = (LinearLayout) findViewById(R.id.password_linearlayout);
+        smsCodeLayout = (LinearLayout) findViewById(R.id.sms_code_linearlayout);*/
     }
 
 
@@ -187,7 +192,6 @@ public class LoginActivity extends AppCompatActivity  {
             progressDialog.setMessage(getString(R.string.login_progress_message));
             progressDialog.setCancelable(true);
             progressDialog.setCanceledOnTouchOutside(false);
-
             progressDialog.show();
         }else{
             progressDialog.cancel();
@@ -221,6 +225,68 @@ public class LoginActivity extends AppCompatActivity  {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }*/
     }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id){
+            case R.id.user_login_button:
+                attemptLogin();
+                break;
+            case R.id.user_register_button:
+                Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.indentify_code_login:
+                toggleLoginType();
+                break;
+           default:
+               break;
+        }
+    }
+
+    /**
+     *
+     * switch the login type
+     * type:PASSWORD_LOGIN
+     *      SMS_CODE_LOGIN
+     */
+    private void toggleLoginType(){
+        if(loginType == PASSWORD_LOGIN){
+            loginType = SMS_CODE_LOGIN;
+        }else{
+            loginType = PASSWORD_LOGIN;
+        }
+        updateStringByLoginType(loginType);
+    }
+
+    /**
+     * if the login type is PASSWORD_LOGIN,need show username/telphone + password
+     * if the login type is SMS_CODE_LGOIN, need show telphone + sms code.
+     * @param loginType
+     */
+    private void updateStringByLoginType(int loginType){
+
+           switch (loginType){
+               case PASSWORD_LOGIN:
+                   userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
+                   passWordInputLayout.setHint(getResources().getString(R.string.prompt_password));
+                 //  mUserNameView.setHint(R.string.prompt_username);
+                  // mPasswordView.setHint(R.string.prompt_password);
+                   break;
+               case SMS_CODE_LOGIN:
+                   userNameInputLayout.setHint(getResources().getString(R.string.phone_number));
+                   passWordInputLayout.setHint(getResources().getString(R.string.sms_code));
+                  // mUserNameView.setHint(R.string.phone_number);
+                  // mPasswordView.setHint(R.string.sms_code);
+                   break;
+               default:
+                   userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
+                   passWordInputLayout.setHint(getResources().getString(R.string.prompt_password));
+                   break;
+           }
+    }
+
 
 }
 
