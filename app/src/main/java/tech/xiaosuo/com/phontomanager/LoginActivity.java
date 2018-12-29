@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * @return
      */
     private boolean isValidPhoneNumber(String phoneNumber){
-           if(phoneNumber == null || phoneNumber.length()<11){
+           if(phoneNumber == null || phoneNumber.length() != 11){
               return false;
            }
            return true;
