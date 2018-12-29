@@ -202,6 +202,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
+     * check the phone number whether is valid.
+     * @param phoneNumber
+     * @return
+     */
+    private boolean isValidPhoneNumber(String phoneNumber){
+           if(phoneNumber == null || phoneNumber.length()<11){
+              return false;
+           }
+           return true;
+    }
+    /**
      * Shows the progress UI and hides the login form.
      */
 
@@ -266,7 +277,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 toggleLoginType();
                 break;
             case R.id.get_sms_code:
-                sendSmsCodeRequest("19919878084");
+                if(mUserNameView==null || mUserNameView.getText() == null){
+                    Log.d(TAG," the phone number is null,return");
+                    return;
+                }
+                String phoneNumber = mUserNameView.getText().toString();
+                boolean isValidPhoneNumber = isValidPhoneNumber(phoneNumber);
+                if(isValidPhoneNumber){
+                    sendSmsCodeRequest(phoneNumber);
+                }
+
                 break;
            default:
                break;
