@@ -20,10 +20,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import cn.bmob.v3.BmobSMS;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
+import cn.bmob.v3.listener.QueryListener;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 
 /**
@@ -52,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private int loginType = PASSWORD_LOGIN;
     TextInputLayout userNameInputLayout;
     TextInputLayout passWordInputLayout;
+    Button smsCodeButton;
+    Button getSmsCodeButton;
 /*    LinearLayout passwordLayout;
     LinearLayout smsCodeLayout;*/
 
@@ -85,8 +90,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mUserSignInButton.setOnClickListener(this);
         Button registerButton = (Button)findViewById(R.id.user_register_button);
         registerButton.setOnClickListener(this);
-        Button smsCodeButton = (Button)findViewById(R.id.indentify_code_login);
+        smsCodeButton = (Button)findViewById(R.id.sms_code_login);
         smsCodeButton.setOnClickListener(this);
+        getSmsCodeButton = (Button)findViewById(R.id.get_sms_code);
+        getSmsCodeButton.setOnClickListener(this);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -141,7 +148,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            BmobUser.loginByAccount(username, password, new LogInListener<UserInfo>() {
+            if(loginType == PASSWORD_LOGIN){
+                LoginByPassword(username,password);
+            }else if(loginType == SMS_CODE_LOGIN){
+                LoginBySmsCode(username,password);
+            }
+/*            BmobUser.loginByAccount(username, password, new LogInListener<UserInfo>() {
 
                 @Override
                 public void done(UserInfo user, BmobException e) {
@@ -161,7 +173,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }).show();
                     }
                 }
-            });
+            });*/
 
         }
     }
@@ -237,8 +249,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.indentify_code_login:
+            case R.id.sms_code_login:
                 toggleLoginType();
+                break;
+            case R.id.get_sms_code:
+                sendSmsCodeRequest("19919878084");
                 break;
            default:
                break;
@@ -270,23 +285,102 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
            switch (loginType){
                case PASSWORD_LOGIN:
                    userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
-                   passWordInputLayout.setHint(getResources().getString(R.string.prompt_password));
-                 //  mUserNameView.setHint(R.string.prompt_username);
-                  // mPasswordView.setHint(R.string.prompt_password);
+                   //passWordInputLayout.setHint(getResources().getString(R.string.prompt_password));
+                   mPasswordView.setHint(getResources().getString(R.string.prompt_password));
+                   smsCodeButton.setText(R.string.sms_code);
                    break;
                case SMS_CODE_LOGIN:
                    userNameInputLayout.setHint(getResources().getString(R.string.phone_number));
-                   passWordInputLayout.setHint(getResources().getString(R.string.sms_code));
-                  // mUserNameView.setHint(R.string.phone_number);
-                  // mPasswordView.setHint(R.string.sms_code);
+                   //passWordInputLayout.setHint(getResources().getString(R.string.sms_code));
+                   mPasswordView.setHint(getResources().getString(R.string.sms_code));
+                  smsCodeButton.setText(R.string.username_password_login);
                    break;
                default:
                    userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
-                   passWordInputLayout.setHint(getResources().getString(R.string.prompt_password));
+                   mPasswordView.setHint(getResources().getString(R.string.prompt_password));
+                   smsCodeButton.setText(R.string.sms_code);
                    break;
            }
     }
 
+    /**
+     * login using username + password
+     * @param username
+     * @param password
+     */
+    private void LoginByPassword( String username, String password){
+        BmobUser.loginByAccount(username, password, new LogInListener<UserInfo>() {
 
+            @Override
+            public void done(UserInfo user, BmobException e) {
+                showProgress(false);
+                if(user!=null){
+                    Log.d(TAG,"login success");
+                    Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
+                }else{
+                    Log.d(TAG,"login fail " + e.toString());
+                    new AlertDialog.Builder(mActivity).setTitle(R.string.dialog_title).setMessage(e.toString()).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * login by phone number + sms code.
+     * @param phone
+     * @param smsCode
+     */
+    private void LoginBySmsCode(String phone,String smsCode){
+        /**
+         * TODO 此API需要在用户已经注册并验证的前提下才能使用
+         */
+        BmobUser.loginBySMSCode(phone, smsCode, new LogInListener<BmobUser>() {
+            @Override
+            public void done(BmobUser bmobUser, BmobException e) {
+                if (e == null) {
+                    Log.d(TAG,"login success by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
+                    Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
+                } else {
+                    Log.d(TAG,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage() + "\n");
+                    Toast.makeText(mContext,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"login success by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
+                }
+            }
+        });
+    }
+
+    /**
+     * send sms code request to Bmob server
+     * @param phone
+     */
+    private void sendSmsCodeRequest(String phone){
+        /**
+         * TODO template 如果是自定义短信模板，此处替换为你在控制台设置的自定义短信模板名称；如果没有对应的自定义短信模板，则使用默认短信模板，默认模板名称为空字符串""。
+         *
+         * TODO 应用名称以及自定义短信内容，请使用不会被和谐的文字，防止发送短信验证码失败。
+         *
+         */
+        BmobSMS.requestSMSCode(phone, "", new QueryListener<Integer>() {
+            @Override
+            public void done(Integer smsId, BmobException e) {
+                if (e == null) {
+                    Log.d(TAG,"send sms code request success " + smsId + "\n");
+                    Toast.makeText(mContext,"send sms code request success",Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG,"send sms code request fail " + e.getErrorCode() + "-" + e.getMessage());
+                    Toast.makeText(mContext,"send sms code request fail" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
 

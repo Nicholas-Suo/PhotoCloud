@@ -81,8 +81,10 @@
     <string name="cloud_photo">云端照片</string>
     <string name="log_out">退出</string>
     <string name="phone_number">手机号</string>
-    <string name="sms_code">验证码</string>
-    <string name="indentify_code_login">短信随机码</string>
+    <string name="sms_code">短信随机码</string>
+<!--    <string name="sms_code_login">短信随机码</string>-->
+    <string name="username_password_login">密码登录</string>
+    <string name="get_sms_code">获取验证码</string>
     <!--      <string name="download_finish_number">已下载文件数：</string>
     <string name="total">总数：</string>
        <string name="un_need_download_number"></string>-->
