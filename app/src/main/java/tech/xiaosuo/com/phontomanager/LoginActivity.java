@@ -28,6 +28,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SaveListener;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 
 /**
@@ -58,6 +59,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextInputLayout passWordInputLayout;
     Button smsCodeButton;
     Button getSmsCodeButton;
+    Button mUserLoginButton;
 /*    LinearLayout passwordLayout;
     LinearLayout smsCodeLayout;*/
 
@@ -87,8 +89,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        Button mUserSignInButton = (Button) findViewById(R.id.user_login_button);
-        mUserSignInButton.setOnClickListener(this);
+        mUserLoginButton = (Button) findViewById(R.id.user_login_button);
+        mUserLoginButton.setOnClickListener(this);
         Button registerButton = (Button)findViewById(R.id.user_register_button);
         registerButton.setOnClickListener(this);
         smsCodeButton = (Button)findViewById(R.id.sms_code_login);
@@ -156,7 +158,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     LoginByPassword(username,password);
                     break;
                 case SMS_CODE_LOGIN:
-                    LoginBySmsCode(username,password);
+                    LoginOrSignByPhoneNumber(username,password);
+                  //  LoginBySmsCode(username,password);
                     break;
                 default:
                     break;
@@ -325,6 +328,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                    mUserNameView.setInputType(InputType.TYPE_CLASS_TEXT);
                    mPasswordView.setHint(getResources().getString(R.string.prompt_password));
                    smsCodeButton.setText(R.string.sms_code);
+                   mUserLoginButton.setText(R.string.action_sign_in_short);
                    break;
                case SMS_CODE_LOGIN:
                    getSmsCodeButton.setVisibility(View.VISIBLE);
@@ -332,13 +336,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                    //passWordInputLayout.setHint(getResources().getString(R.string.sms_code));
                    mUserNameView.setInputType(InputType.TYPE_CLASS_PHONE);
                    mPasswordView.setHint(getResources().getString(R.string.sms_code));
-                  smsCodeButton.setText(R.string.username_password_login);
+                   smsCodeButton.setText(R.string.username_password_login);
+                   mUserLoginButton.setText(R.string.action_sign_in);
                    break;
                default:
                    getSmsCodeButton.setVisibility(View.GONE);
                    userNameInputLayout.setHint(getResources().getString(R.string.prompt_username));
                    mPasswordView.setHint(getResources().getString(R.string.prompt_password));
                    smsCodeButton.setText(R.string.sms_code);
+                   mUserLoginButton.setText(R.string.action_sign_in_short);
                    break;
            }
     }
@@ -410,7 +416,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
          * TODO 应用名称以及自定义短信内容，请使用不会被和谐的文字，防止发送短信验证码失败。
          *
          */
-        BmobSMS.requestSMSCode(phone, "", new QueryListener<Integer>() {
+        BmobSMS.requestSMSCode(phone, "相册云短信模板", new QueryListener<Integer>() {
             @Override
             public void done(Integer smsId, BmobException e) {
                 if (e == null) {
@@ -419,6 +425,68 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     Log.d(TAG,"send sms code request fail " + e.getErrorCode() + "-" + e.getMessage());
                     Toast.makeText(mContext,"send sms code request fail" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * 一键注册或登录的同时保存其他字段的数据
+     * @param phone
+     * @param code
+     */
+    private void signOrLogin(String phone,String code) {
+        UserInfo user = new UserInfo();
+        user.setUsername(phone);
+        user.setEmail("");
+        //设置手机号码（必填）
+        user.setMobilePhoneNumber(phone);
+        user.setPassword("");
+/*        User user = new User();
+        //设置手机号码（必填）
+        user.setMobilePhoneNumber(phone);
+        //设置用户名，如果没有传用户名，则默认为手机号码
+        user.setUsername(phone);
+        //设置用户密码
+        user.setPassword("");
+        //设置额外信息：此处为年龄*/
+
+        user.signOrLogin(code, new SaveListener<UserInfo>() {
+
+            @Override
+            public void done(UserInfo user,BmobException e) {
+                if (e == null) {
+               //     mTvInfo.append("短信注册或登录成功：" + user.getUsername());
+                  //  startActivity(new Intent(UserSignUpOrLoginSmsActivity.this, UserMainActivity.class));
+                } else {
+                  //  mTvInfo.append("短信注册或登录失败：" + e.getErrorCode() + "-" + e.getMessage() + "\n");
+                }
+            }
+        });
+    }
+
+    /**
+     * use phone number login or sign.
+     * @param phone
+     * @param sms_code
+     */
+    private void LoginOrSignByPhoneNumber(String phone,String sms_code){
+        BmobUser.signOrLoginByMobilePhone(phone, sms_code, new LogInListener<BmobUser>() {
+            @Override
+            public void done(BmobUser bmobUser, BmobException e) {
+                showProgress(false);
+                if (e == null) {
+                    Log.d(TAG,"login/register success by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
+                    Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(mainIntent);
+                    finish();
+                  //  mTvInfo.append("短信注册或登录成功：" + bmobUser.getUsername());
+                  //  startActivity(new Intent(UserSignUpOrLoginSmsActivity.this, UserMainActivity.class));
+                } else {
+                   // mTvInfo.append("短信注册或登录失败：" + e.getErrorCode() + "-" + e.getMessage() + "\n");
+                    Log.d(TAG,"login/register fail by sms code" + e.getErrorCode() + "-" + e.getMessage() + "\n");
+                    Toast.makeText(mContext,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,"login/register by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
                 }
             }
         });

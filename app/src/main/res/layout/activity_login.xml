@@ -153,6 +153,7 @@
                 android:layout_marginTop="@dimen/button_margin_top"
                 android:layout_toLeftOf="@+id/user_login_button"
                 android:text="@string/action_register_short"
+                android:visibility="gone"
                 android:textStyle="bold" />
              <Button
                   android:id="@+id/sms_code_login"
