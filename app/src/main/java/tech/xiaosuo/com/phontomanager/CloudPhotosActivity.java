@@ -421,8 +421,7 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
             return;
         }
         Log.d(TAG," downloadMultiFiles begin dataList size: " + dataList.size());
-        final ProgressDialog progressDialog = getProgressDialog(R.string.is_downloading,ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.show();
+
         // remove the exist data in phone ,only download not exist photo.
         Iterator<ImageInfo> iterator = dataList.keySet().iterator();
         while (iterator.hasNext()){
@@ -438,6 +437,9 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
             }
         }*/
         final int total = dataList.size();
+        final ProgressDialog progressDialog = getProgressDialog(R.string.is_downloading,ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMax(total);
+        progressDialog.show();
         Log.d(TAG," downloadMultiFiles after remove, dataList size: " + total);
         if(total == 0){
             Log.d(TAG," all photo has existed in phone,do not need dwonload");
