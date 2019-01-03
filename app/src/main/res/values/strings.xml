@@ -84,6 +84,7 @@
     <string name="download_photo">Download</string>
     <string name="delete_photo">Delete from cloud</string>
     <string name="photo_exist_in_phone">Photo has exist,no need download</string>
+    <string name="all_photos_exist_in_phone">All Photos have exist,no need download</string>
     <string name="pls_select">Please Select</string>
     <string name="is_deleting">Deleting...</string>
     <string name="download_finish">Download finish</string>

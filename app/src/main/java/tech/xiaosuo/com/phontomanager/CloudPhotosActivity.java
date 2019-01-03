@@ -36,6 +36,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -419,17 +420,31 @@ public class CloudPhotosActivity extends AppCompatActivity implements AdapterVie
         if(dataList == null || mContext == null){
             return;
         }
-
+        Log.d(TAG," downloadMultiFiles begin dataList size: " + dataList.size());
         final ProgressDialog progressDialog = getProgressDialog(R.string.is_downloading,ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.show();
         // remove the exist data in phone ,only download not exist photo.
-        for(ImageInfo imageInfo : dataList.keySet()){
+        Iterator<ImageInfo> iterator = dataList.keySet().iterator();
+        while (iterator.hasNext()){
+            ImageInfo imageInfo = iterator.next();
+            if(DBUtils.isExistInSysImageDb(mContext,imageInfo)){
+                iterator.remove();
+            }
+        }
+        //the code will display exception:concurrentModificationException,we need use iterator to remove it,or use synchronized.
+/*        for(ImageInfo imageInfo : dataList.keySet()){
             if(DBUtils.isExistInSysImageDb(mContext,imageInfo)){
                 dataList.remove(imageInfo);
             }
-        }
+        }*/
         final int total = dataList.size();
-
+        Log.d(TAG," downloadMultiFiles after remove, dataList size: " + total);
+        if(total == 0){
+            Log.d(TAG," all photo has existed in phone,do not need dwonload");
+            progressDialog.dismiss();
+            Toast.makeText(mContext,R.string.all_photos_exist_in_phone,Toast.LENGTH_SHORT).show();
+            return;
+        }
         for(final ImageInfo imageInfo : dataList.keySet()){
   /*          if(DBUtils.isExistInSysImageDb(mContext,imageInfo)){
                continue;
