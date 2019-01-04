@@ -1248,6 +1248,20 @@ private Handler mainHandler = new Handler(){
         }
     }
 
+    @Override
+    public void clearCheckedPhotosExistInCloud(List<Integer> checkedList) {
+        if(checkedList == null || checkedList.size() == 0){
+            Log.d(TAG," the checked photo which exists in cloud is null,return");
+            return;
+        }
+
+        for(int i =0;i<checkedList.size();i++){
+            if(mRecylerAdapter != null){
+                mRecylerAdapter.removeValueFromCheckStatusMap(checkedList.get(i));
+            }
+        }
+    }
+
 
     /**
      *  end the ObjectAnimator animation

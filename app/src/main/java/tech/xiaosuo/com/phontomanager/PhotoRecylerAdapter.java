@@ -530,7 +530,7 @@ public class PhotoRecylerAdapter extends RecyclerView.Adapter<PhotoRecylerAdapte
      * remove  value from checed box map.
      * @param key
      */
-    public  void removeValueFromMap(Integer key){
+    public  void removeValueFromCheckStatusMap(Integer key){
         if(checkBoxStatusMap != null && checkBoxStatusMap.containsKey(key)){
             checkBoxStatusMap.remove(key);
         }

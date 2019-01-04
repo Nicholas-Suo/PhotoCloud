@@ -1,5 +1,7 @@
 package tech.xiaosuo.com.phontomanager.interfaces;
 
+import java.util.List;
+
 public interface UIPresenter {
     public static final boolean ANIMATION_START = true;
     public static final boolean ANIMATION_STOP = false;
@@ -19,4 +21,5 @@ public interface UIPresenter {
     public void uploadAnimation(boolean flag,int position);
     public void sendMsgToMain(int msgId,int param);
     public void saveImageUploadStatus(String md5);//we use md5 to check whether the image is same as the server image.
+    public void clearCheckedPhotosExistInCloud(List<Integer> checkedList);//when upload the photos which are in cloud,we need unchecked the photos,and clear them in checkedmap-->PhotoRecylerAdapter:checkBoxStatusMap
 }

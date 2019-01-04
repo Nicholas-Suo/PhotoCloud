@@ -198,6 +198,7 @@ public class PhotoManagerService extends Service {
             return;
         }
         Log.d(TAG," upload muti files begin");
+        //perhaps we need sync the data from web server ,to ensure the data is correct.
         for(final Map.Entry<Integer, ImageInfo> entry : indexMap.entrySet()){
             ImageInfo imageInfo = entry.getValue();
              exist = DBUtils.isExistInDb(mDbHelper.getReadableDatabase(),imageInfo.getMd5(),imageInfo.getData());
@@ -206,10 +207,13 @@ public class PhotoManagerService extends Service {
             }
         }
 
+        if(uiPresenter != null){
+            uiPresenter.clearCheckedPhotosExistInCloud(positions);
+        }
 
         for(int i=0 ;i<positions.size();i++){
             int itemPosition = positions.get(i);
-            indexMap.remove(itemPosition);//update the indexmap , for upload the unupload photo
+            indexMap.remove(itemPosition);//update the indexmap , for upload the unupload photo  //and need update the adapter map value.
             if(uiPresenter != null){
                 uiPresenter.sendMsgToMain(UIPresenter.MSG_UPDATE_CHECKBOX_UNCHECKED,itemPosition);
             }
