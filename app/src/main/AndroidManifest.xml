@@ -46,8 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
-            >
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="com.backup.login" />
             </intent-filter>
@@ -67,13 +66,13 @@
         <activity
             android:name=".CloudPhotosActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".PreviewPhotoActivity"
-            android:label="@string/preview_photo"
-            ></activity>
+        <activity
+            android:name=".PreviewPhotoActivity"
+            android:label="@string/preview_photo" />
 
-
-
-
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:label="@string/reset_password" />
     </application>
 
 </manifest>

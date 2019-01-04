@@ -89,4 +89,13 @@
     <!--      <string name="download_finish_number">已下载文件数：</string>
     <string name="total">总数：</string>
        <string name="un_need_download_number"></string>-->
+    <string name="reset_password">重置密码</string>
+    <string name="new_password">新密码</string>
+    <string name="confirm_new_password">确认新密码</string>
+    <string name="submit">提交</string>
+    <string name="reset_pwd_phone_number">手机号码：</string>
+    <string name="reset_pwd_success">密码已重置成功</string>
+    <string name="reset_pwd_fail">密码重置失败</string>
+    <string name="sms_code_has_send_to">验证码已发送到手机：</string>
+    <string name="sms_code_request_fail">验证码请求失败</string>
 </resources>

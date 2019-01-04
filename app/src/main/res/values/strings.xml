@@ -94,7 +94,17 @@
     <string name="log_out">Log Out</string>
     <string name="phone_number">PhoneNumber</string>
     <string name="sms_code">Sms Code</string>
-<!--    <string name="sms_code_login">Sms Code</string>-->
+    <!--    <string name="sms_code_login">Sms Code</string>-->
     <string name="username_password_login">Password Login</string>
     <string name="get_sms_code">Get SmsCode</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="title_activity_reset_password">Reset Password</string>
+    <string name="new_passworid">New Password</string>
+    <string name="confirm_new_passworid">Confirm Password</string>
+    <string name="submit">Submit</string>
+    <string name="reset_pwd_phone_number">Phone Number：</string>
+    <string name="reset_pwd_success">reset password success</string>
+    <string name="reset_pwd_fail">reset password fail</string>
+    <string name="sms_code_has_send_to">Sms Code has been sent to：</string>
+    <string name="sms_code_request_fail">Request Sms Code Fail.</string>
 </resources>
