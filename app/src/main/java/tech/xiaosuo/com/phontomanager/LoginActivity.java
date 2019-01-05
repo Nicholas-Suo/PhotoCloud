@@ -240,7 +240,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 boolean isValidPhoneNumber = isValidPhoneNumber(phoneNumber);
                 if(isValidPhoneNumber){
                     timerRequestSmsCodeAgain(Utils.ONE_MINUTE);
-                  //  sendSmsCodeRequest(phoneNumber);
+                    sendSmsCodeRequest(phoneNumber);
                 }else{
                     Toast.makeText(mContext,R.string.error_invalid_telnumber,Toast.LENGTH_SHORT).show();
                 }

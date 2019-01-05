@@ -364,5 +364,16 @@ public class Utils {
         }
     }*/
 
+    /**
+     * check the phone number whether is correct.
+     * @param phoneNumber
+     * @return
+     */
+    public static boolean isValidPhoneNumber(String phoneNumber){
+        if(phoneNumber == null || phoneNumber.length() != 11){
+            return false;
+        }
+        return true;
+    }
 
 }

@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.util.Util;
+
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 import tech.xiaosuo.com.phontomanager.tools.BmobInterface;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
@@ -52,7 +54,8 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         mUserPhoneNumber = mBmobUser.getMobilePhoneNumber();
         // Set up the login form.
         mPhoneNumberView = (TextView)findViewById(R.id.reset_pwd_phone_number);
-        mPhoneNumberView.setText(mUserPhoneNumber);
+        String starPhoneNumber = modifyPhoneMiddleNumberUsingStar(mUserPhoneNumber);
+        mPhoneNumberView.setText(starPhoneNumber);
 
         mNewPasswordView = (EditText) findViewById(R.id.new_password);
    /*     mNewPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -141,7 +144,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 6;
+        return password.length() > 5;
     }
 
 
@@ -247,6 +250,29 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         mGetSmsCodeButton.setEnabled(false);
         String timerStr = getString(R.string.request_sms_code_agian,String.valueOf(second));
         mGetSmsCodeButton.setText(timerStr);
+    }
+
+    /**
+     * modify the phonenumber ex:18612345678  --> 186****5678
+     * @param phoneNumber
+     * @return
+     */
+    private String modifyPhoneMiddleNumberUsingStar(String phoneNumber){
+
+            String encryptPhoneNumber = null;
+            int middleCount = 4;
+            if(!Utils.isValidPhoneNumber(phoneNumber)){
+                 Log.d(TAG," modify phone middl number fail,params is null");
+                 return null ;
+            }
+
+            int len = phoneNumber.length();
+            String begin3bit = phoneNumber.substring(0,middleCount - 1);
+            String midle4bit = "****";
+            String end4bit = phoneNumber.substring(2*middleCount - 1,len);
+            Log.d(TAG," modify phone middl number begin3bit " + begin3bit + " end4bit " + end4bit);
+            encryptPhoneNumber = begin3bit + midle4bit + end4bit;
+            return encryptPhoneNumber;
     }
 
 }
