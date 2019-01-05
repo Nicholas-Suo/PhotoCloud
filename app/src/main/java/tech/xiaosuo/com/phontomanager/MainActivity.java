@@ -304,7 +304,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nv_reset_password) {
             Intent intent = new Intent(this,ResetPasswordActivity.class);
             startActivity(intent);
-        }else if (id == R.id.nav_slideshow) {
+        }else if (id == R.id.nv_replace_phonenumber) {
+            Intent intent = new Intent(this,ReplacePhoneNumberActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
 

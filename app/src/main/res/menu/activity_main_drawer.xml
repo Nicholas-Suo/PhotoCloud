@@ -6,10 +6,17 @@
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/cloud_photo" />
+
         <item android:id="@+id/nv_reset_password"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/reset_password"
             />
+
+        <item android:id="@+id/nv_replace_phonenumber"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/replace_phonenumber"
+            />
+
         <item android:id="@+id/logout"
             android:title="@string/log_out"
             android:icon="@drawable/ic_menu_send"

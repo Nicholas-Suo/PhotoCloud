@@ -108,4 +108,7 @@
     <string name="sms_code_has_send_to">Sms Code has been sent to：</string>
     <string name="sms_code_request_fail">Request Sms Code Fail.</string>
     <string name="request_sms_code_agian">Request Again<xliff:g id="tiem_second"> %1$s</xliff:g>s</string>
+    <string name="replace_phonenumber">Replace PhoneNumber</string>
+    <string name="curr_login_phone_number">Current login phone number：</string>
+    <string name="new_phone_number">new phone number</string>
 </resources>

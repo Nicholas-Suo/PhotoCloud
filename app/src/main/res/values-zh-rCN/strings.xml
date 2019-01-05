@@ -99,4 +99,7 @@
     <string name="sms_code_has_send_to">验证码已发送到手机：</string>
     <string name="sms_code_request_fail">验证码请求失败</string>
     <string name="request_sms_code_agian">重新获取<xliff:g id="tiem_second"> %1$s</xliff:g> 秒</string>
+    <string name="replace_phonenumber">更换手机号码</string>
+    <string name="curr_login_phone_number">当前登录的号码：</string>
+    <string name="new_phone_number">新手机号码号码</string>
 </resources>

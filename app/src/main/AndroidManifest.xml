@@ -69,10 +69,12 @@
         <activity
             android:name=".PreviewPhotoActivity"
             android:label="@string/preview_photo" />
-
         <activity
             android:name=".ResetPasswordActivity"
             android:label="@string/reset_password" />
+        <activity android:name=".ReplacePhoneNumberActivity"
+            android:label="@string/replace_phonenumber"
+            ></activity>
     </application>
 
 </manifest>
