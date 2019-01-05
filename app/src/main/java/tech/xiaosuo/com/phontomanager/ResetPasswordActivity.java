@@ -1,13 +1,17 @@
 package tech.xiaosuo.com.phontomanager;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,11 +23,13 @@ import android.widget.Toast;
 
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 import tech.xiaosuo.com.phontomanager.tools.BmobInterface;
+import tech.xiaosuo.com.phontomanager.tools.Utils;
 
 
 public class ResetPasswordActivity extends AppCompatActivity implements View.OnClickListener , BmobInterface.CallBackPresenter{
 
     // UI references.
+    private static final String TAG = "ResetPasswordActivity";
     private EditText mNewPasswordView;
     private EditText mConfirmPasswordView;
     private TextView mPhoneNumberView;
@@ -32,7 +38,8 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
     private String mUserPhoneNumber;
     UserInfo mBmobUser;
     Context mContext;
-
+/*    private static final int REFRESH_SEND_SMS_CODE_TIMER = 1;
+    private static final int ONE_MINUTE = 60;*/
     private ProgressDialog progressDialog = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +168,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         switch (id){
             case R.id.get_reset_pwd_sms_code:
                 BmobInterface.sendSmsCodeRequest(mContext,mUserPhoneNumber);
+                timerRequestSmsCodeAgain(Utils.ONE_MINUTE);
                 break;
              default:
                 break;
@@ -191,7 +199,55 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
     }
 
 
+   Handler resetHandler = new Handler(){
+       @Override
+       public void handleMessage(Message msg) {
+            int what = msg.what;
+            switch (what){
+                case Utils.REFRESH_SEND_SMS_CODE_TIMER:
+                    int second = msg.arg1;
+                    if(second > 0){
+                        second--;
+                        timerRequestSmsCodeAgain(second);
+                    }
+                    break;
+                    default:
+                        break;
+            }
+       }
+   };
 
+    /**
+     * begin send msg to refresh the Button : "Request sms code button" per 1s.
+     * @param second
+     */
+    private void timerRequestSmsCodeAgain(int second){
+        Log.d(TAG," the left time is " + second + " second");
+        updateRequestSmsCodeButtonText(second);
+        if(second < 0 || second > Utils.ONE_MINUTE){
+            return;
+        }
+        Message msg = new Message();
+        msg.what = Utils.REFRESH_SEND_SMS_CODE_TIMER;
+        msg.arg1 = second;
+        resetHandler.sendMessageDelayed(msg,1000);
+    }
+
+    /**
+     * update the reqest sms code button's text
+     * @param second
+     */
+    @SuppressLint("StringFormatInvalid")
+    private void updateRequestSmsCodeButtonText(int second){
+        if(second <= 0){
+            mGetSmsCodeButton.setText(R.string.request_sms_code);
+            mGetSmsCodeButton.setEnabled(true);
+            return;
+        }
+        mGetSmsCodeButton.setEnabled(false);
+        String timerStr = getString(R.string.request_sms_code_agian,String.valueOf(second));
+        mGetSmsCodeButton.setText(timerStr);
+    }
 
 }
 

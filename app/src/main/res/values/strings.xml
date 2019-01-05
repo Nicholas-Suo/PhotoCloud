@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">PhontoManager</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -96,7 +96,7 @@
     <string name="sms_code">Sms Code</string>
     <!--    <string name="sms_code_login">Sms Code</string>-->
     <string name="username_password_login">Password Login</string>
-    <string name="get_sms_code">Get SmsCode</string>
+    <string name="request_sms_code">Request SmsCode</string>
     <string name="reset_password">Reset Password</string>
     <string name="title_activity_reset_password">Reset Password</string>
     <string name="new_passworid">New Password</string>
@@ -107,4 +107,5 @@
     <string name="reset_pwd_fail">reset password fail</string>
     <string name="sms_code_has_send_to">Sms Code has been sent to：</string>
     <string name="sms_code_request_fail">Request Sms Code Fail.</string>
+    <string name="request_sms_code_agian">Request Again<xliff:g id="tiem_second"> %1$s</xliff:g>s</string>
 </resources>

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">相册云</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -35,7 +35,7 @@
     <string name="password_not_equal">密码不一致</string>
     <string name="title_activity_register">用户注册</string>
     <string name="register_commit">提交</string>
-    <string name="error_invalid_telnumber">手机号码不合法</string>
+    <string name="error_invalid_telnumber">手机号码不正确</string>
     <string name="error_invalid_nickname">昵称不符合规范</string>
     <string name="nickname_exist">昵称已存在</string>
     <string name="email_exist">Email已存在</string>
@@ -85,7 +85,7 @@
     <string name="sms_code">短信随机码</string>
 <!--    <string name="sms_code_login">短信随机码</string>-->
     <string name="username_password_login">密码登录</string>
-    <string name="get_sms_code">获取验证码</string>
+    <string name="request_sms_code">获取验证码</string>
     <!--      <string name="download_finish_number">已下载文件数：</string>
     <string name="total">总数：</string>
        <string name="un_need_download_number"></string>-->
@@ -98,4 +98,5 @@
     <string name="reset_pwd_fail">密码重置失败</string>
     <string name="sms_code_has_send_to">验证码已发送到手机：</string>
     <string name="sms_code_request_fail">验证码请求失败</string>
+    <string name="request_sms_code_agian">重新获取<xliff:g id="tiem_second"> %1$s</xliff:g> 秒</string>
 </resources>

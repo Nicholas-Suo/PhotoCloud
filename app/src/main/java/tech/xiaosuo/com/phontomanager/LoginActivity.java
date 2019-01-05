@@ -1,12 +1,15 @@
 package tech.xiaosuo.com.phontomanager;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -30,6 +33,7 @@ import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
+import tech.xiaosuo.com.phontomanager.tools.Utils;
 
 /**
  * A login screen that offers login via email/password.
@@ -164,33 +168,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 default:
                     break;
             }
-/*            if(getLoginType() == PASSWORD_LOGIN){
-                LoginByPassword(username,password);
-            }else if(loginType == SMS_CODE_LOGIN){
-                LoginBySmsCode(username,password);
-            }*/
-/*            BmobUser.loginByAccount(username, password, new LogInListener<UserInfo>() {
-
-                @Override
-                public void done(UserInfo user, BmobException e) {
-                    showProgress(false);
-                    if(user!=null){
-                        Log.d(TAG,"login success");
-                        Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
-                        startActivity(mainIntent);
-                        finish();
-                    }else{
-                        Log.d(TAG,"login fail " + e.toString());
-                        new AlertDialog.Builder(mActivity).setTitle(R.string.dialog_title).setMessage(e.toString()).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        }).show();
-                    }
-                }
-            });*/
-
         }
     }
 
@@ -237,32 +214,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressDialog = null;
         }
 
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }*/
     }
 
     @Override
@@ -282,12 +233,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.get_sms_code:
                 if(mUserNameView==null || mUserNameView.getText() == null){
                     Log.d(TAG," the phone number is null,return");
+                    Toast.makeText(mContext,R.string.error_invalid_telnumber,Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String phoneNumber = mUserNameView.getText().toString();
                 boolean isValidPhoneNumber = isValidPhoneNumber(phoneNumber);
                 if(isValidPhoneNumber){
-                    sendSmsCodeRequest(phoneNumber);
+                    timerRequestSmsCodeAgain(Utils.ONE_MINUTE);
+                  //  sendSmsCodeRequest(phoneNumber);
+                }else{
+                    Toast.makeText(mContext,R.string.error_invalid_telnumber,Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -495,5 +450,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public int getLoginType() {
         return loginType;
     }
+
+    Handler loginHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            int what = msg.what;
+            switch (what){
+                case Utils.REFRESH_SEND_SMS_CODE_TIMER:
+                    int second = msg.arg1;
+                    if(second > 0){
+                        second--;
+                        timerRequestSmsCodeAgain(second);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    /**
+     * begin send msg to refresh the Button : "Request sms code button" per 1s.
+     * @param second
+     */
+    private void timerRequestSmsCodeAgain(int second){
+        Log.d(TAG," the left time is " + second + " second");
+        updateRequestSmsCodeButtonText(second);
+        if(second < 0 || second > Utils.ONE_MINUTE){
+            return;
+        }
+        Message msg = new Message();
+        msg.what = Utils.REFRESH_SEND_SMS_CODE_TIMER;
+        msg.arg1 = second;
+        loginHandler.sendMessageDelayed(msg,1000);
+    }
+
+    /**
+     * update the reqest sms code button's text
+     * @param second
+     */
+    @SuppressLint("StringFormatInvalid")
+    private void updateRequestSmsCodeButtonText(int second){
+        if(second <= 0){
+            getSmsCodeButton.setText(R.string.request_sms_code);
+            getSmsCodeButton.setEnabled(true);
+            return;
+        }
+        getSmsCodeButton.setEnabled(false);
+        String timerStr = getString(R.string.request_sms_code_agian,String.valueOf(second));
+        getSmsCodeButton.setText(timerStr);
+    }
+
+
 }
 
