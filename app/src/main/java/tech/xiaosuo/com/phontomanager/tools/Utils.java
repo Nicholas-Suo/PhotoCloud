@@ -376,4 +376,44 @@ public class Utils {
         return true;
     }
 
+    /**
+     * get current login user's info.
+     * @return
+     */
+    public static UserInfo getCurrUserInfo(){
+        UserInfo mBmobUser  = UserInfo.getCurrentUser(UserInfo.class);
+        return  mBmobUser;
+    }
+    /**
+     * get current login user's phone number.
+     * @return
+     */
+    public static String getCurrUserPhoneNumber(){
+        UserInfo mBmobUser  = UserInfo.getCurrentUser(UserInfo.class);
+        String currPhoneNumber = mBmobUser.getMobilePhoneNumber();
+        return  currPhoneNumber;
+    }
+
+    /**
+     * modify the phonenumber ex:18612345678  --> 186****5678
+     * @param phoneNumber
+     * @return
+     */
+    public static  String modifyPhoneMiddleNumberUsingStar(String phoneNumber){
+
+        String encryptPhoneNumber = null;
+        int middleCount = 4;
+        if(!Utils.isValidPhoneNumber(phoneNumber)){
+            Log.d(TAG," modify phone middl number fail,params is null");
+            return null ;
+        }
+
+        int len = phoneNumber.length();
+        String begin3bit = phoneNumber.substring(0,middleCount - 1);
+        String midle4bit = "****";
+        String end4bit = phoneNumber.substring(2*middleCount - 1,len);
+        Log.d(TAG," modify phone middl number begin3bit " + begin3bit + " end4bit " + end4bit);
+        encryptPhoneNumber = begin3bit + midle4bit + end4bit;
+        return encryptPhoneNumber;
+    }
 }

@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.util.Util;
 
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
-import tech.xiaosuo.com.phontomanager.tools.BmobInterface;
+import tech.xiaosuo.com.phontomanager.interfaces.BmobInterface;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
 
@@ -179,7 +179,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void resetPassword(boolean result) {
+    public void resetPasswordDialog(boolean result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
          if(result == true){
              builder.setTitle(R.string.reset_password).setMessage(R.string.reset_pwd_success).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -201,8 +201,13 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         dialog.show();
     }
 
+    @Override
+    public void replacePhoneNumberDialog(boolean result) {
 
-   Handler resetHandler = new Handler(){
+    }
+
+
+    Handler resetHandler = new Handler(){
        @Override
        public void handleMessage(Message msg) {
             int what = msg.what;

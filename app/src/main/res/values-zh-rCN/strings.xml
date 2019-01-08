@@ -101,5 +101,8 @@
     <string name="request_sms_code_agian">重新获取<xliff:g id="tiem_second"> %1$s</xliff:g> 秒</string>
     <string name="replace_phonenumber">更换手机号码</string>
     <string name="curr_login_phone_number">当前登录的号码：</string>
-    <string name="new_phone_number">新手机号码号码</string>
+    <string name="new_phone_number">新手机号码</string>
+    <string name="replace_phone_number_fail">绑定号码失败</string>
+    <string name="replace_phone_number_success">绑定号码成功</string>
+    <string name="sms_code_verify_fail">验证码验证失败</string>
 </resources>

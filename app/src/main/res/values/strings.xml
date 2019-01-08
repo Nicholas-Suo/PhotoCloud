@@ -111,4 +111,7 @@
     <string name="replace_phonenumber">Replace PhoneNumber</string>
     <string name="curr_login_phone_number">Current login phone number：</string>
     <string name="new_phone_number">new phone number</string>
+    <string name="replace_phone_number_fail">Bind Phone number fail</string>
+    <string name="replace_phone_number_success">Bind Phone number success</string>
+    <string name="sms_code_verify_fail">Sms code verify fail</string>
 </resources>
