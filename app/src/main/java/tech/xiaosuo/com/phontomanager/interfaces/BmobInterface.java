@@ -20,6 +20,7 @@ public  class BmobInterface {
 
     private static final String TAG = "BmobInterface";
   //  static CallBackPresenter mCallBackPresenter;
+  public static final int USER_NAME_EXIST = 202;
     public static final int SMS_CODE_ERROR = 207;
     public static final int SMS_CODE_SEND_ERROR = 10010;
     public static final int SMS_CODE_SEND_FAIL_SERVER_NO_MSG_COUNT_ERROR = 10011;
@@ -117,6 +118,8 @@ public  class BmobInterface {
                  //   mTvInfo.append("验证码验证成功，您可以在此时进行绑定操作！\n");
                     Log.d(TAG,"the sms code is correct ,now bind/unbind the phone number ");
                     UserInfo user = Utils.getCurrUserInfo();
+                    user.setUsername(null);
+
                     user.setMobilePhoneNumber(phone);
                     //绑定
                     user.setMobilePhoneNumberVerified(true);
@@ -174,14 +177,17 @@ public  class BmobInterface {
 
         switch (err_code){
 
-            case BmobInterface.SMS_CODE_ERROR:
+            case SMS_CODE_ERROR:
                 messageStr = activity.getString(R.string.sms_code_err);
                 break;
-            case BmobInterface.SMS_CODE_SEND_ERROR:
+            case SMS_CODE_SEND_ERROR:
                 messageStr = activity.getString(R.string.sms_code_request_fail);
                 break;
-            case BmobInterface.SMS_CODE_SEND_FAIL_SERVER_NO_MSG_COUNT_ERROR:
+            case SMS_CODE_SEND_FAIL_SERVER_NO_MSG_COUNT_ERROR:
                 messageStr = activity.getString(R.string.pls_contact_customer_service);
+                break;
+            case USER_NAME_EXIST:
+                messageStr = activity.getString(R.string.nickname_exist);
                 break;
 
             default:

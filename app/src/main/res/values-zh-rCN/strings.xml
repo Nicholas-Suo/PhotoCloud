@@ -37,7 +37,7 @@
     <string name="register_commit">提交</string>
     <string name="error_invalid_telnumber">手机号码不正确</string>
     <string name="error_invalid_nickname">昵称不符合规范</string>
-    <string name="nickname_exist">昵称已存在</string>
+    <string name="nickname_exist">用户名已存在</string>
     <string name="email_exist">Email已存在</string>
     <string name="telnumber_exist">手机号已存在</string>
     <string name="register_progress_message">注册中...</string>
