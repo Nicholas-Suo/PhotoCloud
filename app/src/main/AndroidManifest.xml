@@ -72,9 +72,18 @@
         <activity
             android:name=".ResetPasswordActivity"
             android:label="@string/reset_password" />
-        <activity android:name=".ReplacePhoneNumberActivity"
-            android:label="@string/replace_phonenumber"
-            ></activity>
+        <activity
+            android:name=".ReplacePhoneNumberActivity"
+            android:label="@string/replace_phonenumber" />
+        <activity
+            android:name=".interfaces.BaseActivity"
+            android:label="@string/title_activity_base"
+            android:parentActivityName="android.support.v7.app.AppCompatActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.support.v7.app.AppCompatActivity" />
+        </activity>
     </application>
 
 </manifest>

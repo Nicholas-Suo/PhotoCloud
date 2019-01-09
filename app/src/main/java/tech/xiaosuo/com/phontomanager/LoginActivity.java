@@ -33,12 +33,14 @@ import cn.bmob.v3.listener.LogInListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
+import tech.xiaosuo.com.phontomanager.interfaces.BaseActivity;
+import tech.xiaosuo.com.phontomanager.interfaces.BmobInterface;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -118,6 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        int loginType = getLoginType();
         // Reset errors.
         mUserNameView.setError(null);
         mPasswordView.setError(null);
@@ -130,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || (loginType == PASSWORD_LOGIN && !isPasswordValid(password))) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -141,11 +144,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             mUserNameView.setError(getString(R.string.error_field_required));
             focusView = mUserNameView;
             cancel = true;
-        } else if (!isUsernameValid(username)) {
-            mUserNameView.setError(getString(R.string.error_invalid_username));
+        }else if(loginType == SMS_CODE_LOGIN && !isValidPhoneNumber(username)){
+            mUserNameView.setError(getString(R.string.error_invalid_telnumber));
             focusView = mUserNameView;
             cancel = true;
         }
+        /*else if (!isUsernameValid(username)) {
+            mUserNameView.setError(getString(R.string.error_invalid_username));
+            focusView = mUserNameView;
+            cancel = true;
+        }*/
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -155,15 +163,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            int loginType = getLoginType();
             Log.d(TAG," the login type is: " + loginType);
             switch (loginType){
                 case PASSWORD_LOGIN:
                     LoginByPassword(username,password);
                     break;
                 case SMS_CODE_LOGIN:
-                    LoginOrSignByPhoneNumber(username,password);
-                  //  LoginBySmsCode(username,password);
+                  //  LoginOrSignByPhoneNumber(username,password);
+                    LoginBySmsCode(username,password);
                     break;
                 default:
                     break;
@@ -283,7 +290,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                    mUserNameView.setInputType(InputType.TYPE_CLASS_TEXT);
                    mPasswordView.setHint(getResources().getString(R.string.prompt_password));
                    smsCodeButton.setText(R.string.sms_code);
-                   mUserLoginButton.setText(R.string.action_sign_in_short);
+                 //  mUserLoginButton.setText(R.string.action_sign_in_short);
                    break;
                case SMS_CODE_LOGIN:
                    getSmsCodeButton.setVisibility(View.VISIBLE);
@@ -292,7 +299,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                    mUserNameView.setInputType(InputType.TYPE_CLASS_PHONE);
                    mPasswordView.setHint(getResources().getString(R.string.sms_code));
                    smsCodeButton.setText(R.string.username_password_login);
-                   mUserLoginButton.setText(R.string.action_sign_in);
+                //   mUserLoginButton.setText(R.string.action_sign_in);
                    break;
                default:
                    getSmsCodeButton.setVisibility(View.GONE);
@@ -342,6 +349,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         /**
          * TODO 此API需要在用户已经注册并验证的前提下才能使用
          */
+        if(smsCode == null || !isValidPhoneNumber(phone)){
+            Log.d(TAG,"login fail by sms code,params error");
+           return;
+        }
         BmobUser.loginBySMSCode(phone, smsCode, new LogInListener<BmobUser>() {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
@@ -353,8 +364,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     finish();
                 } else {
                     Log.d(TAG,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage() + "\n");
-                    Toast.makeText(mContext,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
-                    Log.d(TAG,"login success by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
+                  //  Toast.makeText(mContext,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    showErrorCode(e.getErrorCode());
+//                    Log.d(TAG,"login success by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
                 }
             }
         });
@@ -379,7 +391,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(mContext,"send sms code request success",Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(TAG,"send sms code request fail " + e.getErrorCode() + "-" + e.getMessage());
-                    Toast.makeText(mContext,"send sms code request fail" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(mContext,"send sms code request fail" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    showErrorCode(e.getErrorCode());
                 }
             }
         });
@@ -440,8 +453,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                    // mTvInfo.append("短信注册或登录失败：" + e.getErrorCode() + "-" + e.getMessage() + "\n");
                     Log.d(TAG,"login/register fail by sms code" + e.getErrorCode() + "-" + e.getMessage() + "\n");
-                    Toast.makeText(mContext,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
-                    Log.d(TAG,"login/register by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
+               //     Toast.makeText(mContext,"login fail by sms code" + e.getErrorCode() + "-" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    showErrorCode(e.getErrorCode());
+                  //  Log.d(TAG,"login/register by sms code" + bmobUser.getObjectId() + "-" + bmobUser.getUsername());
                 }
             }
         });
@@ -500,6 +514,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String timerStr = getString(R.string.request_sms_code_agian,String.valueOf(second));
         getSmsCodeButton.setText(timerStr);
     }
+
+   /* *//**
+     * show the error code from the bmob web server.
+     * @param err_code
+     *//*
+    private void showError(int err_code){
+        BmobInterface.showError(this,err_code);
+       *//* String messageStr = Integer.toString(err_code);
+
+
+        switch (err_code){
+
+            case BmobInterface.SMS_CODE_ERROR:
+                messageStr = getString(R.string.sms_code_err);
+                break;
+            case BmobInterface.SMS_CODE_SEND_ERROR:
+                messageStr = getString(R.string.sms_code_request_fail);
+                break;
+
+            default:
+                messageStr = Integer.toString(err_code);
+                break;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.dialog_title).setMessage(messageStr).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    //finish();
+                }
+            });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();*//*
+    }*/
+
 
 
 }

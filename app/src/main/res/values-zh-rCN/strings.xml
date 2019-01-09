@@ -105,4 +105,6 @@
     <string name="replace_phone_number_fail">绑定号码失败</string>
     <string name="replace_phone_number_success">绑定号码成功</string>
     <string name="sms_code_verify_fail">验证码验证失败</string>
+    <string name="sms_code_err">验证码错误</string>
+    <string name="pls_contact_customer_service">服务器错误，请联系客服</string>
 </resources>

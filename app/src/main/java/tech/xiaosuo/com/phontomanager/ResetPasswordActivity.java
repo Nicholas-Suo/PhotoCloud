@@ -24,11 +24,12 @@ import android.widget.Toast;
 import com.bumptech.glide.util.Util;
 
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
+import tech.xiaosuo.com.phontomanager.interfaces.BaseActivity;
 import tech.xiaosuo.com.phontomanager.interfaces.BmobInterface;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
 
-public class ResetPasswordActivity extends AppCompatActivity implements View.OnClickListener , BmobInterface.CallBackPresenter{
+public class ResetPasswordActivity extends BaseActivity implements View.OnClickListener {//, BmobInterface.CallBackPresenter
 
     // UI references.
     private static final String TAG = "ResetPasswordActivity";
@@ -48,7 +49,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        BmobInterface.setCallBackPresenter(this);
+    //    BmobInterface.setCallBackPresenter(this);
         mContext = getApplicationContext();
         mBmobUser  = UserInfo.getCurrentUser(UserInfo.class);
         mUserPhoneNumber = mBmobUser.getMobilePhoneNumber();
@@ -136,7 +137,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
            // showProgress(true);
-            BmobInterface.resetPassword(smsCode,newPassword);
+            BmobInterface.resetPassword(this,smsCode,newPassword);
         }
     }
 
@@ -170,14 +171,14 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
         int id = v.getId();
         switch (id){
             case R.id.get_reset_pwd_sms_code:
-                BmobInterface.sendSmsCodeRequest(mContext,mUserPhoneNumber);
+                BmobInterface.sendSmsCodeRequest(this,mUserPhoneNumber);
                 timerRequestSmsCodeAgain(Utils.ONE_MINUTE);
                 break;
              default:
                 break;
         }
     }
-
+/*
     @Override
     public void resetPasswordDialog(boolean result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -199,12 +200,9 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
          }
          AlertDialog dialog = builder.create();
         dialog.show();
-    }
+    }*/
 
-    @Override
-    public void replacePhoneNumberDialog(boolean result) {
 
-    }
 
 
     Handler resetHandler = new Handler(){

@@ -13,10 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import tech.xiaosuo.com.phontomanager.bean.UserInfo;
+import tech.xiaosuo.com.phontomanager.interfaces.BaseActivity;
 import tech.xiaosuo.com.phontomanager.interfaces.BmobInterface;
 import tech.xiaosuo.com.phontomanager.tools.Utils;
 
-public class ReplacePhoneNumberActivity extends AppCompatActivity implements View.OnClickListener ,BmobInterface.CallBackPresenter{
+public class ReplacePhoneNumberActivity extends BaseActivity implements View.OnClickListener {// ,BmobInterface.CallBackPresenter
 
     private static final String TAG="ReplacePhoneNumber";
     TextView currNumberView;
@@ -32,7 +33,7 @@ public class ReplacePhoneNumberActivity extends AppCompatActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_replace_phone_number);
         mContext = getApplicationContext();
-        BmobInterface.setCallBackPresenter(this);
+     //   BmobInterface.setCallBackPresenter(this);
         initView();
     }
 
@@ -68,14 +69,14 @@ public class ReplacePhoneNumberActivity extends AppCompatActivity implements Vie
             case R.id.replace_pnum_request_smscode_button:
 
                 if(Utils.isValidPhoneNumber(newPhoneNumber)){
-                    BmobInterface.sendSmsCodeRequest(mContext,newPhoneNumber);
+                    BmobInterface.sendSmsCodeRequest(this,newPhoneNumber);
                 }
                 break;
             case R.id.replace_pnum_submit_button:
                 Log.d(TAG,"bind/unbind phone number clic ");
                 if(smsCodeView != null && !TextUtils.isEmpty(smsCodeView.getText().toString())){
                     Log.d(TAG,"bind/unbind phone number start ");
-                    BmobInterface.replacePhoneNumber(mContext,newPhoneNumber,smsCodeView.getText().toString());
+                    BmobInterface.replacePhoneNumber(this,newPhoneNumber,smsCodeView.getText().toString());
                 }
                 break;
                 default:
@@ -83,12 +84,8 @@ public class ReplacePhoneNumberActivity extends AppCompatActivity implements Vie
         }
     }
 
-    @Override
-    public void resetPasswordDialog(boolean result) {
 
-    }
-
-    @Override
+/*    @Override
     public void replacePhoneNumberDialog(boolean result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if(result){
@@ -109,7 +106,7 @@ public class ReplacePhoneNumberActivity extends AppCompatActivity implements Vie
         }
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
+    }*/
 
 
 }

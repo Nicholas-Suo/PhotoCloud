@@ -201,15 +201,19 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
 
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
+        if(mEmailView.getVisibility() == View.VISIBLE)
+        {
+            if (TextUtils.isEmpty(email)) {
+                mEmailView.setError(getString(R.string.error_field_required));
+                focusView = mEmailView;
+                cancel = true;
+            } else if (!isEmailValid(email)) {
+                mEmailView.setError(getString(R.string.error_invalid_email));
+                focusView = mEmailView;
+                cancel = true;
+            }
         }
+
         // Check for a valid tel address.
         if (TextUtils.isEmpty(telnumber) || (telnumber.length() < 11 && telnumber.length() > 0)) {
             mTelNumber.setError(getString(R.string.error_invalid_telnumber));
@@ -234,7 +238,10 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             showProgress(true);
             UserInfo user = new UserInfo();
             user.setUsername(nickname);
-            user.setEmail(email);
+            if(mEmailView.getVisibility() == View.VISIBLE){
+                user.setEmail(email);
+            }
+
             user.setMobilePhoneNumber(telnumber);
             user.setPassword(password);
             user.signUp(new SaveListener<UserInfo>() {

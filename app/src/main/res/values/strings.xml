@@ -114,4 +114,7 @@
     <string name="replace_phone_number_fail">Bind Phone number fail</string>
     <string name="replace_phone_number_success">Bind Phone number success</string>
     <string name="sms_code_verify_fail">Sms code verify fail</string>
+    <string name="sms_code_err">Sms Code Error</string>
+    <string name="title_activity_base">BaseActivity</string>
+    <string name="pls_contact_customer_service">WebServer Error,pls contact customer service </string>
 </resources>
