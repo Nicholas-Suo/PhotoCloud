@@ -1,8 +1,11 @@
 package tech.xiaosuo.com.phontomanager;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -67,9 +70,10 @@ public class ReplacePhoneNumberActivity extends BaseActivity implements View.OnC
         Log.d(TAG," newPhoneNumber: " + newPhoneNumber);
         switch (id){
             case R.id.replace_pnum_request_smscode_button:
-
                 if(Utils.isValidPhoneNumber(newPhoneNumber)){
+                    smsCodeView.requestFocus();
                     BmobInterface.sendSmsCodeRequest(this,newPhoneNumber);
+                    timerRequestSmsCodeAgain(Utils.ONE_MINUTE);
                 }
                 break;
             case R.id.replace_pnum_submit_button:
@@ -84,7 +88,56 @@ public class ReplacePhoneNumberActivity extends BaseActivity implements View.OnC
         }
     }
 
+    /**
+     * begin send msg to refresh the Button : "Request sms code button" per 1s.
+     * @param second
+     */
+    private void timerRequestSmsCodeAgain(int second){
+        Log.d(TAG," the left time is " + second + " second");
+        updateRequestSmsCodeButtonText(second);
+        if(second < 0 || second > Utils.ONE_MINUTE){
 
+            return;
+        }
+        Message msg = new Message();
+        msg.what = Utils.REFRESH_SEND_SMS_CODE_TIMER;
+        msg.arg1 = second;
+        replacePnumHandler.sendMessageDelayed(msg,1000);
+    }
+
+    /**
+     * update the reqest sms code button's text
+     * @param second
+     */
+    @SuppressLint("StringFormatInvalid")
+    private void updateRequestSmsCodeButtonText(int second){
+        if(second <= 0){
+            reqSmsCodeButton.setText(R.string.request_sms_code);
+            reqSmsCodeButton.setEnabled(true);
+            return;
+        }
+        reqSmsCodeButton.setEnabled(false);
+        String timerStr = getString(R.string.request_sms_code_agian,String.valueOf(second));
+        reqSmsCodeButton.setText(timerStr);
+    }
+
+    Handler replacePnumHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            int what = msg.what;
+            switch (what){
+                case Utils.REFRESH_SEND_SMS_CODE_TIMER:
+                    int second = msg.arg1;
+                    if(second > 0){
+                        second--;
+                        timerRequestSmsCodeAgain(second);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 /*    @Override
     public void replacePhoneNumberDialog(boolean result) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

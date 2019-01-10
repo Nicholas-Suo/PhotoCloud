@@ -208,4 +208,24 @@ public  class BmobInterface {
         dialog.show();
     }
 
+
+    /*private static void fetchUserInfoFromBomb(){
+        *//**
+         * 同步控制台数据到缓存中
+         * @param view
+         *//*
+            BmobUser.fetchUserInfo(new FetchUserInfoListener<BmobUser>() {
+                @Override
+                public void done(BmobUser user, BmobException e) {
+                    if (e == null) {
+                        final MyUser myUser = BmobUser.getCurrentUser(MyUser.class);
+                        Snackbar.make(view, "更新用户本地缓存信息成功："+myUser.getUsername()+"-"+myUser.getAge(), Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Log.e("error",e.getMessage());
+                        Snackbar.make(view, "更新用户本地缓存信息失败：" + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+    }*/
 }

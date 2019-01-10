@@ -7,12 +7,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
+import cn.bmob.v3.BmobUser;
 import tech.xiaosuo.com.phontomanager.R;
+import tech.xiaosuo.com.phontomanager.bean.UserInfo;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    private static final String TAG = "BaseActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
             AlertDialog dialog = builder.create();
             dialog.show();
+           // UserInfo userInfo = UserInfo.getCurrentUser(UserInfo.class);
+          //  Log.d(TAG," the new number is: " +userInfo.getMobilePhoneNumber());
         }else{
             BmobInterface.showError(this,err_code);
            /* builder.setTitle(R.string.replace_phonenumber).setMessage(R.string.replace_phone_number_fail).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

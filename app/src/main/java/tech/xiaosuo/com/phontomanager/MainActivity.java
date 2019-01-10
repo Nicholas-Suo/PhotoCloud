@@ -222,6 +222,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG," main onResume");
+        bmobUser = UserInfo.getCurrentUser(UserInfo.class);
         initNavHeaderUserInfo();//for user infor display.
         if(mRecylerAdapter != null){
             mRecylerAdapter.updateSyncStatusMap();
@@ -1313,6 +1315,7 @@ private Handler mainHandler = new Handler(){
         userNameView = (TextView)navigationView.getHeaderView(0).findViewById(R.id.register_username);
         userNameView.setText(bmobUser.getUsername());
         registerPhoneNumberView = (TextView)navigationView.getHeaderView(0).findViewById(R.id.register_phone_number);
+        Log.d(TAG," main ,get the user number: " + bmobUser.getMobilePhoneNumber());
         registerPhoneNumberView.setText(bmobUser.getMobilePhoneNumber());
     }
 
